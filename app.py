@@ -141,7 +141,7 @@ with st.sidebar:
         st.success("✅ Ketergantungan Aman")
         
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
-    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 Juni 2026")
+    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 6 Juni 2026")
 
 # Terapkan Filter
 if filter_prodi and filter_semester:
