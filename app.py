@@ -300,9 +300,7 @@ def load_data():
         'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
         'Tingkat_Copy_Paste', 'Skor_Efektivitas'
     ]
-    # Membersihkan dan merekayasa data
     df['Is_Ketergantungan_Tinggi'] = np.where(df['Porsi_Tugas_AI'] > 5, 'Tinggi (>5 Tugas)', 'Rendah (<=5 Tugas)')
-    # Mencoba parse tanggal untuk Trend (Abaikan jam, ambil harinya saja jika format string)
     try:
         df['Date_Parsed'] = pd.to_datetime(df['Timestamp'], errors='coerce').dt.date
     except:
@@ -315,7 +313,7 @@ df_raw = load_data()
 # 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/8616/8616075.png", width=60) # Placeholder Logo
+    st.image("https://cdn-icons-png.flaticon.com/512/8616/8616075.png", width=60)
     st.markdown("<h3 style='color: #2563EB;'>AI Learning Impact</h3>", unsafe_allow_html=True)
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
     
@@ -335,7 +333,7 @@ with st.sidebar:
         st.success("✅ Ketergantungan Aman")
         
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
-    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 Universitas ...\n\n📅 Juni 2026")
+    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 Juni 2026")
 
 # Terapkan Filter
 if filter_prodi and filter_semester:
@@ -349,7 +347,7 @@ else:
 st.markdown("""
     <div class="header-box">
         <div class="header-title">🎓 AI Learning Impact Analytics</div>
-        <div class="header-subtitle">Monitoring Perilaku Penggunaan Artificial Intelligence pada Ekosistem Akademik</div>
+        <div class="header-subtitle">Monitoring Perilaku Penggunaan Artificial Intelligence pada Ekosistem Academic</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -374,7 +372,7 @@ with kpi2:
     with st.container(border=True):
         avg_jam = df['Jam_per_Hari'].mean()
         st.metric(label="⏱️ Durasi Rata-rata", value=f"{avg_jam:.1f} Jam", delta="-0.2 Jam vs Nasional", delta_color="inverse")
-        st.progress(min(avg_jam/10.0, 1.0)) # Asumsi max 10 jam
+        st.progress(min(avg_jam/10.0, 1.0))
         
 with kpi3:
     with st.container(border=True):
@@ -395,7 +393,6 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ==========================================
 with st.container(border=True):
     st.markdown("#### 📈 Tren Frekuensi Penggunaan AI")
-    # Karena data Timestamp hanya beberapa hari, kita gunakan persebaran kategori
     trend_data = df['Frekuensi_Penggunaan'].value_counts().reset_index()
     trend_data.columns = ['Frekuensi', 'Jumlah']
     
@@ -405,7 +402,6 @@ with st.container(border=True):
         color_discrete_sequence=[COLORS['primary'], COLORS['secondary'], COLORS['light'], '#94A3B8'],
         template='plotly_white'
     )
-    # HANYA MENGGUNAKAN textposition, TANPA marker_border_radius
     fig_hero.update_traces(textposition='outside')
     fig_hero.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
     st.plotly_chart(fig_hero, use_container_width=True)
@@ -420,7 +416,7 @@ with col1:
         st.markdown("#### 🍩 Distribusi Intensitas")
         fig_pie = px.pie(
             df, names='Is_Ketergantungan_Tinggi', 
-            hole=0.5, # Membuatnya Donut Chart yang elegan
+            hole=0.5,
             color='Is_Ketergantungan_Tinggi',
             color_discrete_map={'Tinggi (>5 Tugas)': COLORS['danger'], 'Rendah (<=5 Tugas)': COLORS['success']}
         )
@@ -434,7 +430,7 @@ with col2:
         fig_hist = px.histogram(
             df, x='Jam_per_Hari', nbins=8, 
             color_discrete_sequence=[COLORS['secondary']],
-            marginal="box", # Menambahkan boxplot di atasnya
+            marginal="box",
             template='plotly_white'
         )
         fig_hist.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0))
@@ -493,9 +489,8 @@ with st.container(border=True):
     with mc_c2:
         if st.session_state.get('run_mc', False):
             with st.spinner(f"Memproses {iterations} komputasi..."):
-                time.sleep(1) # Efek dramatis untuk dashboard enterprise
+                time.sleep(1)
                 
-                # Logic Monte Carlo
                 p_dist = df['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
                 cats, weights = p_dist.index.values, p_dist.values
                 stats = df.groupby('Porsi_Tugas_AI')['Skor_Efektivitas'].agg(['mean', 'std']).fillna(df['Skor_Efektivitas'].std())
@@ -512,13 +507,11 @@ with st.container(border=True):
                 
                 st.balloons()
             
-            # Sub-metrik Monte Carlo
             col_m1, col_m2, col_m3 = st.columns(3)
             col_m1.metric("Target Iterasi", f"{iterations:,}")
             col_m2.metric("Mean Ekpekstasi", f"{mean_mc:.3f}")
             col_m3.metric("95% Confidence Interval", f"{ci_low:.2f} - {ci_high:.2f}")
             
-            # Plotly Line Chart Running Mean
             fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template='plotly_white')
             fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=COLORS['danger'], annotation_text="Titik Konvergen")
             fig_run.update_layout(title="Kurva Konvergensi", xaxis_title="Iterasi", yaxis_title="Running Mean", height=300)
@@ -542,7 +535,7 @@ with st.container(border=True):
 st.markdown("""
     <div class="footer">
         <strong>AI Learning Impact Analytics</strong><br>
-        Created by Ahmad Rizza Pahlevi • Universitas ... • 2026<br>
+        Created by Ahmad Rizza Pahlevi • UIN K.H. ABDURRAHMAN WAHID • 2026<br>
         <i>Powered by Python, Streamlit & Plotly Express</i>
     </div>
 """, unsafe_allow_html=True)
