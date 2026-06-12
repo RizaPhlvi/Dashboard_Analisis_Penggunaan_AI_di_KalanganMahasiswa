@@ -405,7 +405,8 @@ with st.container(border=True):
         color_discrete_sequence=[COLORS['primary'], COLORS['secondary'], COLORS['light'], '#94A3B8'],
         template='plotly_white'
     )
-    fig_hero.update_traces(textposition='outside', marker_border_radius=5)
+    # HANYA MENGGUNAKAN textposition, TANPA marker_border_radius
+    fig_hero.update_traces(textposition='outside')
     fig_hero.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
     st.plotly_chart(fig_hero, use_container_width=True)
 
