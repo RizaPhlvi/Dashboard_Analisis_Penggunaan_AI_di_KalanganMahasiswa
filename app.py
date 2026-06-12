@@ -6,21 +6,47 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN (BIAR TIDAK POLOS)
+# 1. KONFIGURASI HALAMAN & THEME PREMIUM
 # ==========================================
-st.set_page_config(page_title="AI Education Analytics", page_icon="🚀", layout="wide")
+st.set_page_config(
+    page_title="AI Learning Impact Analytics", 
+    page_icon="🎓", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Custom CSS untuk mempercantik tampilan background metrik
+# Injeksi CSS Khusus untuk mempercantik UI (Menghilangkan kesan polos)
 st.markdown("""
     <style>
-    div[data-testid="stMetricValue"] {font-size: 28px; color: #660099;}
-    div[data-testid="stMetricLabel"] {font-size: 14px; color: #457b9d; font-weight: bold;}
+    /* Mengubah font dan background utama */
+    .main { background-color: #f4f6f9; }
+    
+    /* Desain Kotak Premium untuk KPI Metrics */
+    .kpi-box {
+        background-color: #ffffff;
+        padding: 22px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 4px solid #660099;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .kpi-box:hover {
+        transform: translateY(-5px);
+    }
+    .kpi-label { font-size: 14px; color: #6c757d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-val { font-size: 32px; color: #660099; font-weight: bold; margin-top: 5px; }
+    
+    /* Desain Kotak untuk Wawasan/Insight */
+    .insight-box {
+        background-color: #eef2f7;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 5px solid #2a9d8f;
+        margin-top: 10px;
+    }
     </style>
 """, unsafe_allow_html=True)
-
-st.title("🚀 Dashboard Analisis Penggunaan AI Akademik")
-st.markdown("*Platform analisis data interaktif untuk mengeksplorasi hubungan intensitas penggunaan AI, perilaku belajar, dan integritas akademik mahasiswa.*")
-st.divider()
 
 # ==========================================
 # 2. MEMUAT DATASET
@@ -34,64 +60,92 @@ def load_data():
         'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
         'Tingkat_Copy_Paste', 'Skor_Efektivitas'
     ]
-    # Rekayasa fitur
     df['Is_Ketergantungan_Tinggi'] = np.where(df['Porsi_Tugas_AI'] > 5, 'Ketergantungan Tinggi (>5)', 'Ketergantungan Rendah (<=5)')
     return df
 
 df = load_data()
 
 # ==========================================
-# 3. KOTAK METRIK UTAMA (KPI)
+# 3. SIDEBAR INTERAKTIF: SIMULASI PROFIL
 # ==========================================
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("👥 Total Responden", f"{len(df)} Mhs")
-col2.metric("⏱️ Rata-rata Durasi AI", f"{df['Jam_per_Hari'].mean():.1f} Jam/Hari")
-col3.metric("📝 Rata-rata Tugas via AI", f"{df['Porsi_Tugas_AI'].mean():.1f} dari 10")
-col4.metric("⭐ Efektivitas Kognitif", f"{df['Skor_Efektivitas'].mean():.2f} / 5.0")
-st.divider()
+with st.sidebar:
+    st.markdown("<h2 style='color: #660099;'>⚙️ Panel Kontrol</h2>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    st.subheader("🔮 Simulasi Profil Anda")
+    st.caption("Masukkan data Anda untuk melihat klasifikasi sistem secara otomatis:")
+    
+    # Input interaktif
+    input_jam = st.slider("Durasi Penggunaan AI (Jam/Hari):", 0, 10, 3)
+    input_tugas = st.slider("Porsi Tugas Berbantu AI (0-10):", 0, 10, 6)
+    
+    st.markdown("---")
+    st.markdown("### 📊 Status Hasil Simulasi:")
+    if input_tugas > 5:
+        st.error("🔴 Ketergantungan Tinggi\n\nRisiko kesulitan belajar mandiri tanpa AI mencapai **83.33%**.")
+    else:
+        st.success("🟢 Ketergantungan Rendah\n\nKemandirian kognitif terjaga dengan baik.")
 
 # ==========================================
-# 4. TAB NAVIGASI MULTIPANEL
+# 4. KONTEN UTAMA: HEADER BREADCRUMB
 # ==========================================
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Profil Pengguna", "⚠️ Ketergantungan & Dampak", "🔗 Analisis Korelasi", "🎲 Simulasi Monte Carlo"])
+st.markdown("<h1 style='color: #660099; margin-bottom: 0;'>🎓 AI Academic Impact Analytics</h1>", unsafe_allow_html=True)
+st.markdown("<p style='color: #555; font-style: italic; margin-top:0;'>Analisis Tingkat Ketergantungan Komputasi, Integritas Akademik, dan Efektivitas Kognitif Mahasiswa</p>", unsafe_allow_html=True)
 
-sns.set_theme(style="whitegrid")
+# Membuat Grid KPI Menggunakan Custom HTML Card
+kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+with kpi1:
+    st.markdown(f"<div class='kpi-box'><div class='kpi-label'>👥 Sampel Data</div><div class='kpi-val'>{len(df)} Mhs</div></div>", unsafe_allow_html=True)
+with kpi2:
+    st.markdown(f"<div class='kpi-box'><div class='kpi-label'>⏱️ Rerata Durasi AI</div><div class='kpi-val'>{df['Jam_per_Hari'].mean():.2f} Jam</div></div>", unsafe_allow_html=True)
+with kpi3:
+    st.markdown(f"<div class='kpi-box'><div class='kpi-label'>📝 Rerata Bantuan Tugas</div><div class='kpi-val'>{df['Porsi_Tugas_AI'].mean():.1f} / 10</div></div>", unsafe_allow_html=True)
+with kpi4:
+    st.markdown(f"<div class='kpi-box'><div class='kpi-label'>⭐ Skor Efektivitas</div><div class='kpi-val'>{df['Skor_Efektivitas'].mean():.2f} / 5</div></div>", unsafe_allow_html=True)
 
-# --- TAB 1: PROFIL PENGGUNA ---
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ==========================================
+# 5. STRUKTUR TABS NAVIGASI
+# ==========================================
+tab1, tab2, tab3 = st.tabs(["📊 Eksplorasi Deskriptif", "🔗 Hubungan & Probabilitas Bersyarat", "🎲 Proyeksi Monte Carlo"])
+
+# Pengaturan Tema Global Grafik Matplotlib/Seaborn
+plt.rcParams['figure.facecolor'] = '#ffffff'
+plt.rcParams['axes.facecolor'] = '#ffffff'
+
+# --- TAB 1: EKSPLORASI DESKRIPTIF ---
 with tab1:
-    st.header("Profil Penggunaan AI Harian")
+    st.markdown("<h3 style='color: #660099;'>Pola Distribusi Penggunaan AI</h3>", unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     
     with c1:
-        # Pie Chart Frekuensi
-        fig1, ax1 = plt.subplots(figsize=(6, 5))
+        fig1, ax1 = plt.subplots(figsize=(7, 4.5))
         freq_order = ['Setiap hari', '3-5 kali seminggu', '1-2 kali seminggu', 'Kurang dari 1 kali seminggu']
         counts = df['Frekuensi_Penggunaan'].value_counts().reindex(freq_order)
-        ax1.pie(counts.values, labels=counts.index, autopct='%1.1f%%', colors=['#660099', '#9954b8', '#cc99cc', '#e1cae6'], startangle=140)
-        ax1.set_title("Distribusi Frekuensi Penggunaan AI", fontweight='bold')
+        ax1.pie(counts.values, labels=counts.index, autopct='%1.1f%%', colors=['#660099', '#9954b8', '#cc99cc', '#e1cae6'], startangle=140, pctdistance=0.75)
+        ax1.set_title("Proporsi Frekuensi Pemakaian AI", fontweight='bold', color='#333333')
         st.pyplot(fig1)
         plt.close(fig1)
         
     with c2:
-        # Histogram Jam per Hari
-        fig2, ax2 = plt.subplots(figsize=(7, 5))
+        fig2, ax2 = plt.subplots(figsize=(7, 4.5))
         sns.histplot(data=df, x='Jam_per_Hari', bins=8, kde=True, color='#457B9D', ax=ax2)
-        ax2.set_title("Distribusi Durasi Penggunaan (Jam/Hari)", fontweight='bold')
+        ax2.set_title("Sebaran Durasi Belajar Bersama AI (Jam/Hari)", fontweight='bold', color='#333333')
         ax2.set_ylabel("Jumlah Mahasiswa")
         st.pyplot(fig2)
         plt.close(fig2)
 
-# --- TAB 2: KETERGANTUNGAN & DAMPAK ---
+# --- TAB 2: HUBUNGAN & PROBABILITAS ---
 with tab2:
-    st.header("Analisis Ketergantungan dan Integritas")
+    st.markdown("<h3 style='color: #660099;'>Analisis Inferensial & Risiko Ketergantungan</h3>", unsafe_allow_html=True)
     c3, c4 = st.columns(2)
     
     with c3:
-        # Probabilitas Bersyarat
-        fig3, ax3 = plt.subplots(figsize=(7, 5))
+        fig3, ax3 = plt.subplots(figsize=(7, 4.5))
         prob_data = pd.crosstab(df['Is_Ketergantungan_Tinggi'], df['Kesulitan_Tanpa_AI'], normalize='index') * 100
         prob_data.plot(kind='bar', stacked=True, color=['#e63946', '#457b9d'], ax=ax3)
-        ax3.set_title("Peluang Merasa Kesulitan Tanpa AI", fontweight='bold')
+        ax3.set_title("Probabilitas Bersyarat: Kesulitan Belajar Tanpa AI", fontweight='bold')
         ax3.set_ylabel("Persentase (%)")
         ax3.tick_params(axis='x', rotation=0)
         for p in ax3.patches:
@@ -101,48 +155,32 @@ with tab2:
         plt.close(fig3)
         
     with c4:
-        # Peningkatan Nilai
-        fig4, ax4 = plt.subplots(figsize=(7, 5))
-        sns.countplot(data=df, x='Peningkatan_Nilai', palette='Set2', ax=ax4, order=['Ya, meningkat drastis', 'Ya, meningkat sedikit', 'Tidak ada perubahan'])
-        ax4.set_title("Persepsi Peningkatan Nilai", fontweight='bold')
-        ax4.set_ylabel("Jumlah Responden")
-        st.pyplot(fig4)
-        plt.close(fig4)
-        
-    with st.expander("💡 Insight Analisis (Klik untuk membuka)"):
-        st.write("**Temuan Krusial:** Mahasiswa dengan ketergantungan tinggi (>5 tugas diserahkan ke AI) memiliki probabilitas **83.3%** merasa kesulitan belajar tanpa AI, jauh lebih rentan dibanding mahasiswa berketergantungan rendah (43.7%). Hal ini mengonfirmasi adanya sindrom ketergantungan teknologi.")
-
-# --- TAB 3: ANALISIS KORELASI ---
-with tab3:
-    st.header("Matriks Korelasi Pearson")
-    st.markdown("Menganalisis hubungan linier antara Intensitas Bantuan AI, Tingkat Copy-Paste, dan Efektivitas Belajar.")
-    
-    c5, c6 = st.columns(2)
-    with c5:
-        # Heatmap
+        fig5, ax5 = plt.subplots(figsize=(6, 4))
         matrix_corr = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
-        fig5, ax5 = plt.subplots(figsize=(6, 5))
-        sns.heatmap(matrix_corr, annot=True, cmap='coolwarm', vmin=-1, vmax=1, fmt=".3f", ax=ax5)
+        sns.heatmap(matrix_corr, annot=True, cmap='coolwarm', vmin=-1, vmax=1, fmt=".3f", ax=ax5, cbar=False)
+        ax5.set_title("Matriks Korelasi Linier Pearson", fontweight='bold')
         st.pyplot(fig5)
         plt.close(fig5)
         
-    with c6:
-        # Regplot
-        fig6, ax6 = plt.subplots(figsize=(7, 5))
-        sns.regplot(data=df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', color='#8338ec', scatter_kws={'s':60, 'alpha':0.6}, line_kws={'color':'red'})
-        ax6.set_title("Tren Efektivitas vs Porsi Bantuan AI", fontweight='bold')
-        st.pyplot(fig6)
-        plt.close(fig6)
+    st.markdown("""
+        <div class='insight-box'>
+        <strong>💡 Rangkuman Insight:</strong> Terdapat selisih probabilitas yang masif (~40%). Mahasiswa yang menyerahkan mayoritas tugasnya ke AI (>5 tugas) 
+        mengalami lonjakan risiko ketidakmampuan belajar mandiri hingga <strong>83.33%</strong>. Korelasi Pearson yang lemah (r = 0.257) membuktikan bahwa menambah kuantitas penggunaan AI tidak serta-merta meningkatkan pemahaman kognitif.
+        </div>
+    """, unsafe_allow_html=True)
 
-# --- TAB 4: SIMULASI MONTE CARLO ---
-with tab4:
-    st.header("Simulasi Monte Carlo (Proyeksi Populasi)")
+# --- TAB 3: PROYEKSI MONTE CARLO ---
+with tab3:
+    st.markdown("<h3 style='color: #660099;'>Pemodelan Stokastik Masa Depan</h3>", unsafe_allow_html=True)
     
-    # Interaktivitas
-    iterasi = st.slider("Atur Jumlah Iterasi Simulasi (Semakin besar semakin stabil kurvanya):", min_value=1000, max_value=20000, value=10000, step=1000)
+    iterasi = st.select_slider(
+        "Pilih Kekuatan Akurasi Iterasi Simulasi:",
+        options=[1000, 5000, 10000, 15000, 20000],
+        value=10000
+    )
     
-    if st.button("🚀 Eksekusi Simulasi Komputasi", type="primary"):
-        with st.spinner("Menghitung probabilitas stokastik..."):
+    if st.button("⚡ Jalankan Komputasi Monte Carlo", type="primary"):
+        with st.spinner("Menghitung model stokastik populasi kelas..."):
             p_dist = df['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
             cats = p_dist.index.values
             weights = p_dist.values
@@ -159,32 +197,30 @@ with tab4:
             mean_mc = np.mean(hasil)
             ci_low, ci_high = np.percentile(hasil, 2.5), np.percentile(hasil, 97.5)
             
-            # Plot
-            c7, c8 = st.columns(2)
-            with c7:
-                fig7, ax7 = plt.subplots(figsize=(7, 5))
+            c5, c6 = st.columns(2)
+            with c5:
+                fig7, ax7 = plt.subplots(figsize=(7, 4.5))
                 ax7.hist(hasil, bins=50, color='#2a9d8f', edgecolor='black', alpha=0.75, density=True)
                 ax7.axvline(mean_mc, color='orange', ls='--', lw=2.5, label=f'Mean: {mean_mc:.3f}')
                 ax7.axvline(ci_low, color='red', ls=':', lw=2, label=f'CI Bawah: {ci_low:.3f}')
                 ax7.axvline(ci_high, color='red', ls=':', lw=2, label=f'CI Atas: {ci_high:.3f}')
-                ax7.set_title("Histogram Distribusi Probabilitas")
+                ax7.set_title("Histogram Distribusi Probabilitas Skor Kelas", fontweight='bold')
                 ax7.legend()
                 st.pyplot(fig7)
                 plt.close(fig7)
                 
-            with c8:
+            with c6:
                 running_mean = np.cumsum(hasil) / np.arange(1, iterasi+1)
-                fig8, ax8 = plt.subplots(figsize=(7, 5))
+                fig8, ax8 = plt.subplots(figsize=(7, 4.5))
                 ax8.plot(np.arange(1, iterasi+1), running_mean, color='#e76f51', lw=2)
                 ax8.axhline(mean_mc, color='black', ls='--', lw=1.5)
-                ax8.set_title("Grafik Konvergensi Simulasi")
-                ax8.set_xlabel("Iterasi")
+                ax8.set_title("Kurva Konvergensi Running Mean", fontweight='bold')
+                ax8.set_xlabel("Jumlah Iterasi Eksperimen")
                 st.pyplot(fig8)
                 plt.close(fig8)
                 
-            st.success(f"**Kesimpulan Simulasi:** Berdasarkan {iterasi} simulasi pada kelas 100 mahasiswa, diproyeksikan nilai efektivitas kelas stabil di angka **{mean_mc:.3f}** (Rentang Kepercayaan 95%: {ci_low:.3f} - {ci_high:.3f}).")
+            st.success(f"🎉 **Hasil Proyeksi:** Pada pengujian tingkat stabilitas tinggi menggunakan {iterasi} iterasi, nilai ekspektasi efektivitas kelas mengunci secara presisi pada angka **{mean_mc:.3f}** dengan Interval Kepercayaan 95% berada pada rentang [{ci_low:.3f} – {ci_high:.3f}].")
 
-%%writefile app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
