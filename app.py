@@ -221,7 +221,7 @@ with tab3:
                 
             st.success(f"🎉 **Hasil Proyeksi:** Pada pengujian tingkat stabilitas tinggi menggunakan {iterasi} iterasi, nilai ekspektasi efektivitas kelas mengunci secara presisi pada angka **{mean_mc:.3f}** dengan Interval Kepercayaan 95% berada pada rentang [{ci_low:.3f} – {ci_high:.3f}].")
 
-%%writefile app.py
+
 import streamlit as st
 import pandas as pd
 import numpy as np
