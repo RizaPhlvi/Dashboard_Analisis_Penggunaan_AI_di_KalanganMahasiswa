@@ -542,7 +542,7 @@ with st.container(border=True):
 st.markdown("""
     <div class="footer">
         <strong>AI Learning Impact Analytics</strong><br>
-        Created by Ahmad Rizza Pahlevi • Universitas UIN K.H ABDURRAHMAN WAHID PEKALONGAN• 2026<br>
+        Created by Ahmad Rizza Pahlevi • Universitas UIN K.H ABDURRAHMAN WAHID PEKALONGAN • 2026<br>
         <i>Powered by Python, Streamlit & Plotly Express</i>
     </div>
 """, unsafe_allow_html=True)
