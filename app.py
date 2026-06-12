@@ -161,7 +161,7 @@ st.markdown("""
 
 # Meta Info Info
 c_info1, c_info2, c_info3 = st.columns(3)
-c_info1.caption(f"📅 **Update:** Juni 2026")
+c_info1.caption(f"📅 **Update:** 6 Juni 2026")
 c_info2.caption(f"👨‍💻 **Developer:** Ahmad Rizza Pahlevi")
 c_info3.caption(f"📊 **Total Dataset:** {len(df)} Responden Ditampilkan")
 st.divider()
