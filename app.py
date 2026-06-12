@@ -1,6 +1,3 @@
-
-
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,41 +6,65 @@ import plotly.graph_objects as go
 import time
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN & CUSTOM CSS
+# 1. KONFIGURASI HALAMAN & CUSTOM CSS (DARK MODE)
 # ==========================================
 st.set_page_config(page_title="AI Learning Impact", page_icon="🎓", layout="wide", initial_sidebar_state="expanded")
 
-# CSS Modern ala Microsoft Power BI / Glassmorphism
+# CSS Modern Dark Mode (Glassmorphism + Neon accents)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
+        color: #E2E8F0; /* Teks terang */
     }
     
-    /* Warna Background Utama */
+    /* Warna Background Utama (Hitam Elegan) */
     [data-testid="stAppViewContainer"] {
-        background-color: #F8FAFC;
+        background-color: #0F172A; /* Slate 900 */
+    }
+    
+    /* Header Container */
+    [data-testid="stHeader"] {
+        background-color: rgba(15, 23, 42, 0); /* Transparan */
+    }
+    
+    /* Sidebar Background */
+    [data-testid="stSidebar"] {
+        background-color: #1E293B; /* Slate 800 */
+        border-right: 1px solid #334155;
     }
     
     /* Styling Metrik & Container Custom */
     div[data-testid="stMetricValue"] {
-        color: #2563EB;
+        color: #38BDF8; /* Light Blue */
         font-weight: 700;
         font-size: 32px;
     }
     
+    div[data-testid="stMetricLabel"] {
+        color: #94A3B8; /* Slate 400 */
+    }
+    
+    /* Box Container (Borders) */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {
+        background-color: #1E293B !important; /* Slate 800 */
+        border-color: #334155 !important;
+        border-radius: 12px;
+    }
+    
     /* Styling Box Header */
     .header-box {
-        background: linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%);
+        background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
         padding: 30px;
         border-radius: 15px;
         color: white;
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
         margin-bottom: 20px;
+        border: 1px solid #3B82F6;
     }
-    .header-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
+    .header-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
     .header-subtitle { font-size: 18px; opacity: 0.9; margin-top: 0; }
     
     /* Footer */
@@ -53,20 +74,28 @@ st.markdown("""
         color: #64748B;
         font-size: 14px;
         margin-top: 50px;
-        border-top: 1px solid #E2E8F0;
+        border-top: 1px solid #334155;
+    }
+    
+    /* Teks biasa */
+    p, h1, h2, h3, h4, h5, h6, label {
+        color: #F8FAFC !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Warna Palet Enterprise
+# Warna Palet Enterprise (Disesuaikan untuk Dark Mode)
 COLORS = {
-    'primary': '#2563EB',
-    'secondary': '#0EA5E9',
-    'success': '#22C55E',
-    'danger': '#EF4444',
-    'warning': '#F59E0B',
-    'light': '#E0F2FE'
+    'primary': '#3B82F6',   # Blue 500
+    'secondary': '#0EA5E9', # Sky 500
+    'success': '#10B981',   # Emerald 500
+    'danger': '#EF4444',    # Red 500
+    'warning': '#F59E0B',   # Amber 500
+    'light': '#38BDF8',     # Sky 400
+    'dark_bg': '#1E293B'    # Slate 800 (Untuk plot bg)
 }
+
+PLOTLY_TEMPLATE = 'plotly_dark'
 
 # ==========================================
 # 2. MEMUAT & PRE-PROCESSING DATA
@@ -80,9 +109,7 @@ def load_data():
         'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
         'Tingkat_Copy_Paste', 'Skor_Efektivitas'
     ]
-    # Membersihkan dan merekayasa data
     df['Is_Ketergantungan_Tinggi'] = np.where(df['Porsi_Tugas_AI'] > 5, 'Tinggi (>5 Tugas)', 'Rendah (<=5 Tugas)')
-    # Mencoba parse tanggal untuk Trend (Abaikan jam, ambil harinya saja jika format string)
     try:
         df['Date_Parsed'] = pd.to_datetime(df['Timestamp'], errors='coerce').dt.date
     except:
@@ -95,8 +122,7 @@ df_raw = load_data()
 # 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/8616/8616075.png", width=60) # Placeholder Logo
-    st.markdown("<h3 style='color: #2563EB;'>AI Learning Impact</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #38BDF8;'>AI Learning Impact</h3>", unsafe_allow_html=True)
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
     
     st.markdown("**📁 FILTER DATASET**")
@@ -115,7 +141,7 @@ with st.sidebar:
         st.success("✅ Ketergantungan Aman")
         
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
-    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 Universitas ...\n\n📅 Juni 2026")
+    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 Juni 2026")
 
 # Terapkan Filter
 if filter_prodi and filter_semester:
@@ -140,6 +166,15 @@ c_info2.caption(f"👨‍💻 **Developer:** Ahmad Rizza Pahlevi")
 c_info3.caption(f"📊 **Total Dataset:** {len(df)} Responden Ditampilkan")
 st.divider()
 
+# Fungsi helper untuk update layout Plotly transparan
+def update_dark_layout(fig):
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#E2E8F0')
+    )
+    return fig
+
 # ==========================================
 # 5. KPI METRICS DENGAN PROGRESS BAR
 # ==========================================
@@ -154,7 +189,7 @@ with kpi2:
     with st.container(border=True):
         avg_jam = df['Jam_per_Hari'].mean()
         st.metric(label="⏱️ Durasi Rata-rata", value=f"{avg_jam:.1f} Jam", delta="-0.2 Jam vs Nasional", delta_color="inverse")
-        st.progress(min(avg_jam/10.0, 1.0)) # Asumsi max 10 jam
+        st.progress(min(avg_jam/10.0, 1.0))
         
 with kpi3:
     with st.container(border=True):
@@ -175,20 +210,20 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ==========================================
 with st.container(border=True):
     st.markdown("#### 📈 Tren Frekuensi Penggunaan AI")
-    # Karena data Timestamp hanya beberapa hari, kita gunakan persebaran kategori
     trend_data = df['Frekuensi_Penggunaan'].value_counts().reset_index()
     trend_data.columns = ['Frekuensi', 'Jumlah']
     
     fig_hero = px.bar(
         trend_data, x='Frekuensi', y='Jumlah', 
         text='Jumlah', color='Frekuensi',
-        color_discrete_sequence=[COLORS['primary'], COLORS['secondary'], COLORS['light'], '#94A3B8'],
-        template='plotly_white'
+        color_discrete_sequence=[COLORS['primary'], COLORS['secondary'], COLORS['light'], '#64748B'],
+        template=PLOTLY_TEMPLATE
     )
-    # HANYA MENGGUNAKAN textposition, TANPA marker_border_radius
     fig_hero.update_traces(textposition='outside')
     fig_hero.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+    fig_hero = update_dark_layout(fig_hero)
     st.plotly_chart(fig_hero, use_container_width=True)
+
 # ==========================================
 # 7. CHART DUA KOLOM (PIE & HISTOGRAM)
 # ==========================================
@@ -199,12 +234,14 @@ with col1:
         st.markdown("#### 🍩 Distribusi Intensitas")
         fig_pie = px.pie(
             df, names='Is_Ketergantungan_Tinggi', 
-            hole=0.5, # Membuatnya Donut Chart yang elegan
+            hole=0.5,
             color='Is_Ketergantungan_Tinggi',
-            color_discrete_map={'Tinggi (>5 Tugas)': COLORS['danger'], 'Rendah (<=5 Tugas)': COLORS['success']}
+            color_discrete_map={'Tinggi (>5 Tugas)': COLORS['danger'], 'Rendah (<=5 Tugas)': COLORS['success']},
+            template=PLOTLY_TEMPLATE
         )
         fig_pie.update_traces(textinfo='percent+label', hoverinfo='label+percent+value')
         fig_pie.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+        fig_pie = update_dark_layout(fig_pie)
         st.plotly_chart(fig_pie, use_container_width=True)
 
 with col2:
@@ -213,10 +250,11 @@ with col2:
         fig_hist = px.histogram(
             df, x='Jam_per_Hari', nbins=8, 
             color_discrete_sequence=[COLORS['secondary']],
-            marginal="box", # Menambahkan boxplot di atasnya
-            template='plotly_white'
+            marginal="box",
+            template=PLOTLY_TEMPLATE
         )
         fig_hist.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0))
+        fig_hist = update_dark_layout(fig_hist)
         st.plotly_chart(fig_hist, use_container_width=True)
 
 # ==========================================
@@ -234,9 +272,10 @@ with col3:
             prob_df, x='Is_Ketergantungan_Tinggi', y='Persentase', color='Kesulitan',
             barmode='stack', text_auto='.1f',
             color_discrete_map={'Ya': COLORS['danger'], 'Tidak': COLORS['success']},
-            template='plotly_white'
+            template=PLOTLY_TEMPLATE
         )
         fig_prob.update_layout(height=400)
+        fig_prob = update_dark_layout(fig_prob)
         st.plotly_chart(fig_prob, use_container_width=True)
 
 with col4:
@@ -246,9 +285,11 @@ with col4:
         
         fig_heat = px.imshow(
             corr_matrix, text_auto=".2f", aspect="auto",
-            color_continuous_scale="Blues", origin="lower"
+            color_continuous_scale="Blues_r", origin="lower", # Membalik skala biru agar pas di mode gelap
+            template=PLOTLY_TEMPLATE
         )
         fig_heat.update_layout(height=400, margin=dict(t=20, b=20, l=0, r=0))
+        fig_heat = update_dark_layout(fig_heat)
         st.plotly_chart(fig_heat, use_container_width=True)
 
 # ==========================================
@@ -272,9 +313,8 @@ with st.container(border=True):
     with mc_c2:
         if st.session_state.get('run_mc', False):
             with st.spinner(f"Memproses {iterations} komputasi..."):
-                time.sleep(1) # Efek dramatis untuk dashboard enterprise
+                time.sleep(1)
                 
-                # Logic Monte Carlo
                 p_dist = df['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
                 cats, weights = p_dist.index.values, p_dist.values
                 stats = df.groupby('Porsi_Tugas_AI')['Skor_Efektivitas'].agg(['mean', 'std']).fillna(df['Skor_Efektivitas'].std())
@@ -291,16 +331,15 @@ with st.container(border=True):
                 
                 st.balloons()
             
-            # Sub-metrik Monte Carlo
             col_m1, col_m2, col_m3 = st.columns(3)
             col_m1.metric("Target Iterasi", f"{iterations:,}")
             col_m2.metric("Mean Ekpekstasi", f"{mean_mc:.3f}")
             col_m3.metric("95% Confidence Interval", f"{ci_low:.2f} - {ci_high:.2f}")
             
-            # Plotly Line Chart Running Mean
-            fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template='plotly_white')
+            fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template=PLOTLY_TEMPLATE)
             fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=COLORS['danger'], annotation_text="Titik Konvergen")
             fig_run.update_layout(title="Kurva Konvergensi", xaxis_title="Iterasi", yaxis_title="Running Mean", height=300)
+            fig_run = update_dark_layout(fig_run)
             st.plotly_chart(fig_run, use_container_width=True)
 
 # ==========================================
@@ -321,7 +360,7 @@ with st.container(border=True):
 st.markdown("""
     <div class="footer">
         <strong>AI Learning Impact Analytics</strong><br>
-        Created by Ahmad Rizza Pahlevi • Universitas UIN K.H ABDURRAHMAN WAHID PEKALONGAN • 2026<br>
+        Created by Ahmad Rizza Pahlevi • UIN K.H. ABDURRAHMAN WAHID • 2026<br>
         <i>Powered by Python, Streamlit & Plotly Express</i>
     </div>
 """, unsafe_allow_html=True)
