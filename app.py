@@ -19,28 +19,12 @@ st.markdown("""
         color: #E2E8F0;
     }
     
-    [data-testid="stAppViewContainer"] {
-        background-color: #0F172A;
-    }
+    [data-testid="stAppViewContainer"] { background-color: #0F172A; }
+    [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
+    [data-testid="stSidebar"] { background-color: #1E293B; border-right: 1px solid #334155; }
     
-    [data-testid="stHeader"] {
-        background-color: rgba(15, 23, 42, 0);
-    }
-    
-    [data-testid="stSidebar"] {
-        background-color: #1E293B;
-        border-right: 1px solid #334155;
-    }
-    
-    div[data-testid="stMetricValue"] {
-        color: #38BDF8;
-        font-weight: 700;
-        font-size: 32px;
-    }
-    
-    div[data-testid="stMetricLabel"] {
-        color: #94A3B8;
-    }
+    div[data-testid="stMetricValue"] { color: #00F0FF; font-weight: 700; font-size: 32px; text-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+    div[data-testid="stMetricLabel"] { color: #94A3B8; }
     
     [data-testid="stVerticalBlockBorderWrapper"] > div {
         background-color: #1E293B !important;
@@ -49,41 +33,30 @@ st.markdown("""
     }
     
     .header-box {
-        background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
+        background: linear-gradient(135deg, #7B2CBF 0%, #00F0FF 100%);
         padding: 30px;
         border-radius: 15px;
         color: white;
-        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        box-shadow: 0 10px 25px rgba(0, 240, 255, 0.2);
         margin-bottom: 20px;
-        border: 1px solid #3B82F6;
+        border: 1px solid #00F0FF;
     }
     .header-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
     .header-subtitle { font-size: 18px; opacity: 0.9; margin-top: 0; }
     
-    .footer {
-        text-align: center;
-        padding: 20px;
-        color: #64748B;
-        font-size: 14px;
-        margin-top: 50px;
-        border-top: 1px solid #334155;
-    }
-    
-    p, h1, h2, h3, h4, h5, h6, label {
-        color: #F8FAFC !important;
-    }
+    .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #334155; }
+    p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
     </style>
 """, unsafe_allow_html=True)
 
-COLORS = {
-    'primary': '#3B82F6',   
-    'secondary': '#0EA5E9', 
-    'success': '#10B981',   
-    'danger': '#EF4444',    
-    'warning': '#F59E0B',   
-    'light': '#38BDF8',     
-    'dark_bg': '#1E293B',
-    'slate': '#64748B'
+# Palet Warna Cyberpunk/Neon untuk Visualisasi
+NEON_COLORS = {
+    'cyan': '#00F0FF',
+    'pink': '#FF007F',
+    'purple': '#B026FF',
+    'green': '#39FF14',
+    'yellow': '#FFFB00',
+    'orange': '#FF9E00'
 }
 
 PLOTLY_TEMPLATE = 'plotly_dark'
@@ -113,7 +86,7 @@ df_raw = load_data()
 # 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
-    st.markdown("<h3 style='color: #38BDF8;'>AI Learning Impact</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #00F0FF;'>AI Learning Impact</h3>", unsafe_allow_html=True)
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
     
     st.markdown("**📁 FILTER DATASET**")
@@ -164,24 +137,20 @@ def update_dark_layout(fig):
     return fig
 
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
-
 with kpi1:
     with st.container(border=True):
         st.metric(label="👥 Total Sampel", value=f"{len(df)} Mhs", delta="Data Terfilter")
         st.progress(1.0)
-        
 with kpi2:
     with st.container(border=True):
         avg_jam = df['Jam_per_Hari'].mean()
         st.metric(label="⏱️ Durasi Rata-rata", value=f"{avg_jam:.1f} Jam", delta="-0.2 Jam vs Nasional", delta_color="inverse")
         st.progress(min(avg_jam/10.0, 1.0))
-        
 with kpi3:
     with st.container(border=True):
         avg_tugas = df['Porsi_Tugas_AI'].mean()
         st.metric(label="📝 Bantuan Tugas", value=f"{avg_tugas:.1f} / 10", delta="Ketergantungan Tinggi", delta_color="off")
         st.progress(avg_tugas/10.0)
-        
 with kpi4:
     with st.container(border=True):
         avg_skor = df['Skor_Efektivitas'].mean()
@@ -204,7 +173,7 @@ with tab1:
         fig_hero = px.bar(
             trend_data, x='Frekuensi', y='Jumlah', 
             text='Jumlah', color='Frekuensi',
-            color_discrete_sequence=[COLORS['primary'], COLORS['secondary'], COLORS['light'], COLORS['slate']],
+            color_discrete_sequence=px.colors.qualitative.Vivid, # Palet Vivid bawaan Plotly
             template=PLOTLY_TEMPLATE
         )
         fig_hero.update_traces(textposition='outside')
@@ -216,10 +185,10 @@ with tab1:
         with st.container(border=True):
             st.markdown("#### 🍩 Distribusi Intensitas")
             fig_pie = px.pie(
-                df, names='Is_Ketergantungan_Tinggi', 
-                hole=0.5,
+                df, names='Is_Ketergantungan_Tinggi', hole=0.5,
                 color='Is_Ketergantungan_Tinggi',
-                color_discrete_map={'Tinggi (>5 Tugas)': COLORS['danger'], 'Rendah (<=5 Tugas)': COLORS['success']},
+                # Kontras ekstrim: Pink Neon untuk bahaya, Cyan untuk aman
+                color_discrete_map={'Tinggi (>5 Tugas)': NEON_COLORS['pink'], 'Rendah (<=5 Tugas)': NEON_COLORS['cyan']},
                 template=PLOTLY_TEMPLATE
             )
             fig_pie.update_traces(textinfo='percent+label', hoverinfo='label+percent+value')
@@ -229,9 +198,10 @@ with tab1:
     with col2:
         with st.container(border=True):
             st.markdown("#### 📊 Distribusi Porsi Tugas Dibantu AI")
+            # Menggunakan warna Purple Neon yang menyala
             fig_porsi = px.histogram(
                 df, x='Porsi_Tugas_AI', text_auto=True, 
-                color_discrete_sequence=[COLORS['primary']], 
+                color_discrete_sequence=[NEON_COLORS['purple']], 
                 template=PLOTLY_TEMPLATE
             )
             fig_porsi.update_layout(height=350, xaxis_title="Jumlah Tugas (0-10)", yaxis_title="Jumlah Mahasiswa", margin=dict(t=20, b=20, l=0, r=0))
@@ -241,10 +211,10 @@ with tab1:
     with col3:
         with st.container(border=True):
             st.markdown("#### ⏳ Histogram Durasi Pemakaian")
+            # Menggunakan warna Green Neon
             fig_hist = px.histogram(
-                df, x='Jam_per_Hari', nbins=8, 
-                color_discrete_sequence=[COLORS['secondary']],
-                marginal="box",
+                df, x='Jam_per_Hari', nbins=8, marginal="box",
+                color_discrete_sequence=[NEON_COLORS['green']],
                 template=PLOTLY_TEMPLATE
             )
             fig_hist.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0))
@@ -253,9 +223,10 @@ with tab1:
     with col4:
         with st.container(border=True):
             st.markdown("#### ⭐ Distribusi Skor Efektivitas Belajar")
+            # Menggunakan warna Yellow Neon
             fig_skor = px.histogram(
                 df, x='Skor_Efektivitas', text_auto=True, 
-                color_discrete_sequence=[COLORS['success']], 
+                color_discrete_sequence=[NEON_COLORS['yellow']], 
                 template=PLOTLY_TEMPLATE
             )
             fig_skor.update_layout(height=350, xaxis_title="Skor Efektivitas (1-5)", margin=dict(t=20, b=20, l=0, r=0))
@@ -264,11 +235,11 @@ with tab1:
     with st.container(border=True):
         st.markdown("#### 📈 Persepsi Peningkatan Nilai")
         fig_nilai = px.histogram(
-            df, x='Peningkatan_Nilai', text_auto=True, 
-            color_discrete_sequence=[COLORS['warning']], 
+            df, x='Peningkatan_Nilai', text_auto=True, color='Peningkatan_Nilai',
+            color_discrete_sequence=px.colors.qualitative.Pastel, 
             template=PLOTLY_TEMPLATE
         )
-        fig_nilai.update_layout(height=350, xaxis_title="Persepsi Nilai", margin=dict(t=20, b=20, l=0, r=0))
+        fig_nilai.update_layout(height=350, xaxis_title="Persepsi Nilai", margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
         st.plotly_chart(update_dark_layout(fig_nilai), use_container_width=True)
 
 
@@ -286,7 +257,7 @@ with tab2:
             fig_prob = px.bar(
                 prob_df, x='Is_Ketergantungan_Tinggi', y='Persentase', color='Kesulitan',
                 barmode='stack', text_auto='.1f',
-                color_discrete_map={'Ya': COLORS['danger'], 'Tidak': COLORS['success']},
+                color_discrete_map={'Ya': NEON_COLORS['pink'], 'Tidak': NEON_COLORS['cyan']},
                 template=PLOTLY_TEMPLATE
             )
             fig_prob.update_layout(height=400, margin=dict(t=20, b=20, l=0, r=0))
@@ -299,7 +270,7 @@ with tab2:
             
             fig_heat = px.imshow(
                 corr_matrix, text_auto=".3f", aspect="auto",
-                color_continuous_scale="Blues_r", origin="lower", 
+                color_continuous_scale="Inferno", origin="lower", # Menggunakan gradasi warna api/Inferno yang sangat elegan di Dark Mode
                 template=PLOTLY_TEMPLATE
             )
             fig_heat.update_layout(height=400, margin=dict(t=20, b=20, l=0, r=0))
@@ -315,12 +286,13 @@ with tab2:
             
             fig_scatter = px.scatter(
                 df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', 
-                opacity=0.7, template=PLOTLY_TEMPLATE
+                opacity=0.8, template=PLOTLY_TEMPLATE
             )
-            fig_scatter.update_traces(marker=dict(size=12, color=COLORS['secondary']))
+            # Titik Scatter Cyan, Garis Tren Hot Pink
+            fig_scatter.update_traces(marker=dict(size=12, color=NEON_COLORS['cyan']))
             fig_scatter.add_trace(go.Scatter(
                 x=df_sorted['Porsi_Tugas_AI'], y=p(df_sorted['Porsi_Tugas_AI']), 
-                mode='lines', name='Trendline', line=dict(color=COLORS['danger'], width=3)
+                mode='lines', name='Trendline', line=dict(color=NEON_COLORS['pink'], width=4)
             ))
             fig_scatter.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
             st.plotly_chart(update_dark_layout(fig_scatter), use_container_width=True)
@@ -329,11 +301,11 @@ with tab2:
         with st.container(border=True):
             st.markdown("#### 📦 Boxplot: Efektivitas Berdasarkan Porsi Tugas")
             fig_box = px.box(
-                df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', 
-                color_discrete_sequence=[COLORS['primary']], 
+                df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', color='Porsi_Tugas_AI',
+                color_discrete_sequence=px.colors.qualitative.Prism, 
                 template=PLOTLY_TEMPLATE
             )
-            fig_box.update_layout(height=350, xaxis_title="Porsi Tugas (0-10)", margin=dict(t=20, b=20, l=0, r=0))
+            fig_box.update_layout(height=350, xaxis_title="Porsi Tugas (0-10)", margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
             st.plotly_chart(update_dark_layout(fig_box), use_container_width=True)
 
     with st.container(border=True):
@@ -342,7 +314,8 @@ with tab2:
         fig_cp = px.bar(
             cp_grouped, x='Porsi_Tugas_AI', y='Tingkat_Copy_Paste', 
             text_auto='.2f', color='Tingkat_Copy_Paste', 
-            color_continuous_scale="Oranges", template=PLOTLY_TEMPLATE
+            color_continuous_scale="Turbo", # Menggunakan gradasi spektrum Turbo
+            template=PLOTLY_TEMPLATE
         )
         fig_cp.update_traces(textposition='outside')
         fig_cp.update_layout(height=350, xaxis_title="Porsi Tugas AI (0-10)", yaxis_title="Skor Copy-Paste (1-5)", margin=dict(t=20, b=20, l=0, r=0))
@@ -394,7 +367,9 @@ with tab3:
                 col_m3.metric("95% Confidence Interval", f"{ci_low:.2f} - {ci_high:.2f}")
                 
                 fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template=PLOTLY_TEMPLATE)
-                fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=COLORS['danger'], annotation_text="Titik Konvergen")
+                # Garis utama warna Cyan, Garis target warna Pink
+                fig_run.update_traces(line=dict(color=NEON_COLORS['cyan'], width=2))
+                fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=NEON_COLORS['pink'], annotation_text="Titik Konvergen")
                 fig_run.update_layout(title="Kurva Konvergensi", xaxis_title="Iterasi", yaxis_title="Running Mean", height=300)
                 fig_run = update_dark_layout(fig_run)
                 st.plotly_chart(fig_run, use_container_width=True)
@@ -412,7 +387,6 @@ with st.container(border=True):
         mean_jam = df['Jam_per_Hari'].mean()
         max_jam = df['Jam_per_Hari'].max()
         
-        # Penanganan jika porsi korelasi menghasilkan error pada data terfilter
         try:
             corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
         except:
