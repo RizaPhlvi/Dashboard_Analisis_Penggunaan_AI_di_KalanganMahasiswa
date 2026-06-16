@@ -52,7 +52,7 @@ if not st.session_state.loaded:
     st.rerun()
 
 # ==========================================
-# 3. CUSTOM CSS (Enterprise Premium Theme)
+# 3. CUSTOM CSS (ENTERPRISE THEME LENGKAP)
 # ==========================================
 st.markdown("""
 <style>
@@ -223,7 +223,7 @@ html, body, [class*="css"] {
     color: var(--text-primary);
 }
 
-/* === METRIC CARDS === */
+/* === METRIC CARDS DEFAULT === */
 div[data-testid="stMetric"] {
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
     backdrop-filter: blur(12px);
@@ -447,6 +447,9 @@ section[data-testid="stVerticalBlock"] > div:hover {
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* === INSIGHT BOX === */
@@ -591,7 +594,7 @@ p, h1, h2, h3, h4, h5, h6, label {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
 }
 
-/* === KPI CARD CUSTOM === */
+/* === KPI CARD CUSTOM (FIXED) === */
 .kpi-card {
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
     backdrop-filter: blur(12px);
@@ -602,6 +605,8 @@ p, h1, h2, h3, h4, h5, h6, label {
     position: relative;
     overflow: hidden;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .kpi-card::before {
@@ -629,128 +634,12 @@ p, h1, h2, h3, h4, h5, h6, label {
 .kpi-icon {
     font-size: 32px;
     margin-bottom: 12px;
-}
-
-.kpi-label {
-    color: var(--text-muted);
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-}
-
-.kpi-value {
-    font-size: 36px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #F8FAFC 0%, #CBD5E1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-}
-
-.kpi-subtitle {
-    color: var(--text-secondary);
-    font-size: 13px;
-    margin-bottom: 12px;
-}
-
-.kpi-delta {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.kpi-delta.positive {
-    background: rgba(34, 197, 94, 0.15);
-    color: var(--accent-success);
-}
-
-.kpi-delta.negative {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--accent-danger);
-}
-
-.kpi-delta.neutral {
-    background: rgba(148, 163, 184, 0.15);
-    color: var(--text-muted);
-}
-
-.kpi-progress {
-    margin-top: 12px;
-    height: 4px;
-    background: rgba(30, 41, 59, 0.8);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-/* === KPI PROGRESS BAR === */
-.kpi-progress {
-    margin-top: 12px;
-    height: 4px;
-    background: rgba(30, 41, 59, 0.8);
-    border-radius: 2px;
-    overflow: hidden;
-    width: 100%;
-}
-
-.kpi-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #3B82F6, #06B6D4);
-    border-radius: 2px;
-    transition: width 1s ease;
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
-}
-
-/* === KPI CARD CUSTOM === */
-.kpi-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
-    padding: 24px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-}
-
-.kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #3B82F6, transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.kpi-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-}
-
-.kpi-card:hover::before {
-    opacity: 1;
-}
-
-.kpi-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
     display: block;
+    line-height: 1;
 }
 
 .kpi-label {
-    color: #94A3B8;
+    color: var(--text-muted);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -771,7 +660,7 @@ p, h1, h2, h3, h4, h5, h6, label {
 }
 
 .kpi-subtitle {
-    color: #CBD5E1;
+    color: var(--text-secondary);
     font-size: 13px;
     margin-bottom: 12px;
 }
@@ -784,21 +673,39 @@ p, h1, h2, h3, h4, h5, h6, label {
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
+    width: fit-content;
 }
 
 .kpi-delta.positive {
     background: rgba(34, 197, 94, 0.15);
-    color: #22C55E;
+    color: var(--accent-success);
 }
 
 .kpi-delta.negative {
     background: rgba(239, 68, 68, 0.15);
-    color: #EF4444;
+    color: var(--accent-danger);
 }
 
 .kpi-delta.neutral {
     background: rgba(148, 163, 184, 0.15);
-    color: #94A3B8;
+    color: var(--text-muted);
+}
+
+.kpi-progress {
+    margin-top: 14px;
+    height: 4px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.kpi-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3B82F6, #06B6D4);
+    border-radius: 2px;
+    transition: width 1s ease;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
 
 /* === DATA QUALITY PANEL === */
@@ -876,7 +783,6 @@ p, h1, h2, h3, h4, h5, h6, label {
     font-size: 14px;
     font-weight: 700;
     border-radius: 8px;
-    margin-right: 12px;
 }
 
 /* === HEATMAP INTERPRETATION === */
@@ -957,35 +863,60 @@ def update_dark_layout(fig):
     return fig
 
 def render_kpi_card(icon, label, value, subtitle, delta_text, delta_type, progress=None):
-    delta_class = delta_type
-    delta_icon = "▲" if delta_type == "positive" else "▼" if delta_type == "negative" else "●"
+    """Render custom KPI card with progress bar - FIXED VERSION"""
     
+    # Validasi delta_type
+    if delta_type not in ['positive', 'negative', 'neutral']:
+        delta_type = 'neutral'
+    
+    # Icon untuk delta
+    if delta_type == 'positive':
+        delta_icon = "▲"
+    elif delta_type == 'negative':
+        delta_icon = "▼"
+    else:
+        delta_icon = "●"
+    
+    # Validasi dan format progress
     progress_html = ""
     if progress is not None:
-        progress_html = f"""
-        <div class="kpi-progress">
-            <div class="kpi-progress-bar" style="width: {progress}%;"></div>
-        </div>
-        """
+        try:
+            progress_val = float(progress)
+            # Clamp antara 0-100 untuk menghindari error
+            progress_val = max(0.0, min(100.0, progress_val))
+            progress_html = f'<div class="kpi-progress"><div class="kpi-progress-bar" style="width: {progress_val:.1f}%;"></div></div>'
+        except (TypeError, ValueError):
+            progress_html = ""  # Skip progress bar jika error
     
-    st.markdown(f"""
+    # Render card dengan HTML yang clean
+    html_content = f"""
     <div class="kpi-card">
-        <div class="kpi-icon">{icon}</div>
+        <span class="kpi-icon">{icon}</span>
         <div class="kpi-label">{label}</div>
         <div class="kpi-value">{value}</div>
         <div class="kpi-subtitle">{subtitle}</div>
-        <div class="kpi-delta {delta_class}">
+        <span class="kpi-delta {delta_type}">
             {delta_icon} {delta_text}
-        </div>
+        </span>
         {progress_html}
     </div>
-    """, unsafe_allow_html=True)
+    """
+    
+    st.markdown(html_content, unsafe_allow_html=True)
 
 def render_data_quality_panel(df):
+    """Render Data Quality Overview Panel"""
     missing_count = df.isnull().sum().sum()
-    missing_pct = (missing_count / (df.shape[0] * df.shape[1])) * 100
+    total_cells = df.shape[0] * df.shape[1]
+    missing_pct = (missing_count / total_cells * 100) if total_cells > 0 else 0
     
-    st.markdown("""
+    date_min = str(df['Date_Parsed'].min()) if 'Date_Parsed' in df.columns else 'N/A'
+    date_max = str(df['Date_Parsed'].max()) if 'Date_Parsed' in df.columns else 'N/A'
+    
+    prodi_count = df['Prodi'].nunique() if 'Prodi' in df.columns else 0
+    semester_count = df['Semester'].nunique() if 'Semester' in df.columns else 0
+    
+    st.markdown(f"""
     <div class="data-quality-panel">
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
             <div style="font-size: 24px;">📊</div>
@@ -995,9 +926,6 @@ def render_data_quality_panel(df):
             </div>
         </div>
         <div class="dq-grid">
-    """, unsafe_allow_html=True)
-    
-    st.markdown(f"""
             <div class="dq-item">
                 <div class="dq-label">Total Records</div>
                 <div class="dq-value">{len(df):,}</div>
@@ -1008,11 +936,11 @@ def render_data_quality_panel(df):
             </div>
             <div class="dq-item">
                 <div class="dq-label">Program Studi</div>
-                <div class="dq-value">{df['Prodi'].nunique()}</div>
+                <div class="dq-value">{prodi_count}</div>
             </div>
             <div class="dq-item">
                 <div class="dq-label">Semester</div>
-                <div class="dq-value">{df['Semester'].nunique()}</div>
+                <div class="dq-value">{semester_count}</div>
             </div>
             <div class="dq-item">
                 <div class="dq-label">Variables</div>
@@ -1020,7 +948,7 @@ def render_data_quality_panel(df):
             </div>
             <div class="dq-item">
                 <div class="dq-label">Date Range</div>
-                <div class="dq-value">{df['Date_Parsed'].min()} - {df['Date_Parsed'].max()}</div>
+                <div class="dq-value" style="font-size: 14px;">{date_min[:10]} → {date_max[:10]}</div>
             </div>
         </div>
     </div>
@@ -1118,7 +1046,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 9. KPI PREMIUM CARDS
+# 9. KPI PREMIUM CARDS (FIXED VERSION)
 # ==========================================
 col1, col2, col3, col4 = st.columns(4)
 
@@ -1133,10 +1061,13 @@ with col1:
         value=f"{len(df)}",
         subtitle="Data Terfilter",
         delta_text="Active Dataset",
-        delta_type="neutral"
+        delta_type="neutral",
+        progress=None
     )
 
 with col2:
+    # Progress bar untuk durasi (max 10 jam = 100%)
+    progress_jam = min(avg_jam / 10 * 100, 100) if len(df) > 0 else 0
     render_kpi_card(
         icon="⏱️",
         label="Durasi Rata-rata",
@@ -1144,10 +1075,12 @@ with col2:
         subtitle="Per Hari",
         delta_text="-0.2 vs Nasional",
         delta_type="negative",
-        progress=min(avg_jam / 10 * 100, 100)
+        progress=progress_jam
     )
 
 with col3:
+    # Progress bar untuk ketergantungan (max 10 = 100%)
+    progress_tugas = avg_tugas * 10 if len(df) > 0 else 0
     render_kpi_card(
         icon="📝",
         label="Bantuan Tugas",
@@ -1155,20 +1088,23 @@ with col3:
         subtitle="Ketergantungan AI",
         delta_text="Moderate",
         delta_type="neutral",
-        progress=avg_tugas * 10
+        progress=progress_tugas
     )
 
 with col4:
-    delta_type = "positive" if avg_skor > 3.5 else "neutral"
-    delta_text = "Excellent" if avg_skor > 3.5 else "Moderate"
+    # Progress bar untuk skor efektivitas (max 5 = 100%)
+    progress_skor = (avg_skor / 5 * 100) if len(df) > 0 else 0
+    delta_type_skor = "positive" if avg_skor > 3.5 else "neutral"
+    delta_text_skor = "Excellent" if avg_skor > 3.5 else "Moderate"
+    
     render_kpi_card(
         icon="⭐",
         label="Skor Efektivitas",
         value=f"{avg_skor:.2f}/5",
         subtitle="Learning Impact",
-        delta_text=delta_text,
-        delta_type=delta_type,
-        progress=avg_skor / 5 * 100
+        delta_text=delta_text_skor,
+        delta_type=delta_type_skor,
+        progress=progress_skor
     )
 
 # ==========================================
@@ -1218,8 +1154,6 @@ tab1, tab2, tab3 = st.tabs([
 # TAB 1: EKSPLORASI DESKRIPTIF
 # ==========================================
 with tab1:
-    render_section_divider("Descriptive Analytics", "02")
-    
     with st.container(border=True):
         render_chart_header(
             "📈 Tren Frekuensi Penggunaan AI",
@@ -1363,8 +1297,6 @@ with tab1:
 # TAB 2: HUBUNGAN & PROBABILITAS
 # ==========================================
 with tab2:
-    render_section_divider("Correlation Analysis", "03")
-    
     col5, col6 = st.columns(2)
     with col5:
         with st.container(border=True):
@@ -1538,8 +1470,6 @@ with tab2:
 # TAB 3: MONTE CARLO SIMULATION
 # ==========================================
 with tab3:
-    render_section_divider("Monte Carlo Simulation", "04")
-    
     with st.container(border=True):
         render_chart_header(
             "🎲 Monte Carlo Simulation",
@@ -1632,17 +1562,17 @@ with st.container(border=True):
     if len(df) > 0:
         setiap_hari_pct = len(df[df['Frekuensi_Penggunaan']=='Setiap hari'])/len(df)*100
         mean_jam = df['Jam_per_Hari'].mean()
-        max_jam = df['Jam_per_Hari'].max()
         try:
-            corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
+            corr_matrix_local = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
+            corr_val_local = corr_matrix_local.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
         except:
-            corr_val = 0.0
+            corr_val_local = 0.0
         
         st.markdown(f"""
         <div class="ai-insight-panel">
             <strong>Analisis Pola Penggunaan AI:</strong><br>
             Berdasarkan pola data saat ini, mahasiswa dengan penggunaan AI tinggi memiliki kecenderungan mengalami 
-            ketergantungan lebih besar, namun peningkatan efektivitas belajar hanya menunjukkan korelasi yang lemah (r = {corr_val:.2f}). 
+            ketergantungan lebih besar, namun peningkatan efektivitas belajar hanya menunjukkan korelasi yang lemah (r = {corr_val_local:.2f}). 
             {setiap_hari_pct:.0f}% mahasiswa menggunakan AI setiap hari dengan durasi rata-rata {mean_jam:.1f} jam. 
             Temuan ini mengindikasikan bahwa <strong>kualitas penggunaan AI lebih penting daripada kuantitas</strong>, 
             dan perlu pengembangan strategi pembelajaran yang mengintegrasikan AI secara bijak tanpa mengurangi 
@@ -1666,9 +1596,10 @@ with st.container(border=True):
         mean_jam = df['Jam_per_Hari'].mean()
         max_jam = df['Jam_per_Hari'].max()
         try:
-            corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
+            corr_matrix_local = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
+            corr_val_local = corr_matrix_local.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
         except:
-            corr_val = 0.0
+            corr_val_local = 0.0
         
         st.markdown(f"""
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
@@ -1682,7 +1613,7 @@ with st.container(border=True):
                 <strong>⚠️ Risiko Kognitif:</strong> Mahasiswa dengan porsi bantuan AI tinggi (>5 tugas) memiliki probabilitas kesulitan belajar mandiri mencapai 83.3%.
             </div>
             <div class="insight-box" style="margin-top: 0;">
-                <strong>📊 Korelasi Lemah:</strong> Korelasi Pearson (r = {corr_val:.2f}) membuktikan bahwa bergantung pada AI tidak menjamin peningkatan pemahaman kognitif.
+                <strong>📊 Korelasi Lemah:</strong> Korelasi Pearson (r = {corr_val_local:.2f}) membuktikan bahwa bergantung pada AI tidak menjamin peningkatan pemahaman kognitif.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1714,4 +1645,3 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
