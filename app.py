@@ -19,7 +19,7 @@ st.markdown("""
         color: #E2E8F0;
     }
     
-    /* === EFEK BACKGROUND DARK SLATE & GRID BUKU MATEMATIKA === */
+    /* === EFEK BACKGROUND UTAMA DARK SLATE & GRID === */
     [data-testid="stAppViewContainer"] { 
         background-color: #181C25; 
         background-image: 
@@ -30,9 +30,10 @@ st.markdown("""
     
     [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
     
+    /* === BACKGROUND SIDEBAR BIRU ELEGAN === */
     [data-testid="stSidebar"] { 
-        background-color: #13161C; 
-        border-right: 1px solid #2A3143; 
+        background: linear-gradient(180deg, #1D4ED8 0%, #1E3A8A 100%) !important; /* Biru Royal ke Biru Navy */
+        border-right: 1px solid #3B82F6; 
     }
     
     /* Warna Metrik Angka */
@@ -62,10 +63,10 @@ st.markdown("""
     
     .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #2D3748; }
     
-    /* === WARNA TEKS UTAMA (PUTIH) === */
+    /* === WARNA TEKS UTAMA (PUTIH KALEM) === */
     p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
     
-    /* === KHUSUS WARNA TEKS SIDEBAR (BIRU) === */
+    /* === KHUSUS TEKS SIDEBAR (PUTIH BERSIH) AGAR KONTRAS DENGAN BACKGROUND BIRU === */
     [data-testid="stSidebar"] p, 
     [data-testid="stSidebar"] h1, 
     [data-testid="stSidebar"] h2, 
@@ -75,7 +76,7 @@ st.markdown("""
     [data-testid="stSidebar"] h6, 
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] span {
-        color: #60A5FA !important; /* Blue 400 */
+        color: #FFFFFF !important; 
     }
     </style>
 """, unsafe_allow_html=True)
@@ -118,7 +119,7 @@ df_raw = load_data()
 # 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
-    st.markdown("<h3 style='color: #60A5FA;'>AI Learning Impact</h3>", unsafe_allow_html=True)
+    st.markdown("<h3>🎓 AI Learning Impact</h3>", unsafe_allow_html=True)
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
     
     st.markdown("**📁 FILTER DATASET**")
