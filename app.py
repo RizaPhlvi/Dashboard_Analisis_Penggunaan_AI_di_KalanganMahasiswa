@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import time
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN & CUSTOM CSS (DARK SLATE + GRID)
+# 1. KONFIGURASI HALAMAN & CUSTOM CSS (DARK SLATE + BLUE ACCENT)
 # ==========================================
 st.set_page_config(page_title="AI Learning Impact", page_icon="🎓", layout="wide", initial_sidebar_state="expanded")
 
@@ -30,12 +30,56 @@ st.markdown("""
     
     [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
     
-    /* === BACKGROUND SIDEBAR BIRU ELEGAN === */
+    /* === BACKGROUND SIDEBAR (KEMBALI KE HITAM/GELAP) === */
     [data-testid="stSidebar"] { 
-        background: linear-gradient(180deg, #1D4ED8 0%, #1E3A8A 100%) !important; /* Biru Royal ke Biru Navy */
-        border-right: 1px solid #3B82F6; 
+        background-color: #13161C !important; 
+        border-right: 1px solid #2A3143; 
     }
     
+    /* =========================================================
+       OVERRIDE DEFAULT WARNA MERAH STREAMLIT MENJADI BIRU
+       ========================================================= */
+       
+    /* 1. Kotak Multiselect (Filter Program Studi & Semester) */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: #2563EB !important; /* Biru Royal */
+        border-radius: 6px;
+    }
+    .stMultiSelect [data-baseweb="tag"] span {
+        color: #FFFFFF !important; /* Teks Putih */
+    }
+    .stMultiSelect [data-baseweb="tag"] svg {
+        fill: #FFFFFF !important; /* Ikon silang (x) jadi putih */
+    }
+
+    /* 2. Tombol Primary (Jalankan Simulasi) */
+    .stButton > button[kind="primary"] {
+        background-color: #2563EB !important;
+        border-color: #2563EB !important;
+        color: white !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background-color: #1D4ED8 !important; /* Biru lebih gelap saat kursor diarahkan */
+        border-color: #1D4ED8 !important;
+    }
+
+    /* 3. Garis Bawah Tab Aktif (Monte Carlo Simulation) */
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        border-bottom-color: #2563EB !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p {
+        color: #60A5FA !important; /* Teks Tab aktif menjadi biru cerah */
+        font-weight: 600;
+    }
+
+    /* 4. Bulatan Slider (Profil Simulator) */
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background-color: #2563EB !important;
+        border-color: #2563EB !important;
+    }
+    
+    /* ========================================================= */
+
     /* Warna Metrik Angka */
     div[data-testid="stMetricValue"] { color: #818CF8; font-weight: 700; font-size: 32px; }
     div[data-testid="stMetricLabel"] { color: #94A3B8; }
@@ -65,19 +109,6 @@ st.markdown("""
     
     /* === WARNA TEKS UTAMA (PUTIH KALEM) === */
     p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
-    
-    /* === KHUSUS TEKS SIDEBAR (PUTIH BERSIH) AGAR KONTRAS DENGAN BACKGROUND BIRU === */
-    [data-testid="stSidebar"] p, 
-    [data-testid="stSidebar"] h1, 
-    [data-testid="stSidebar"] h2, 
-    [data-testid="stSidebar"] h3, 
-    [data-testid="stSidebar"] h4, 
-    [data-testid="stSidebar"] h5, 
-    [data-testid="stSidebar"] h6, 
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] span {
-        color: #FFFFFF !important; 
-    }
     </style>
 """, unsafe_allow_html=True)
 
