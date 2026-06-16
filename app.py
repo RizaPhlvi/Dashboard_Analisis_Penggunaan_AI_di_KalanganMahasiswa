@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import time
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN & CUSTOM CSS (DARK SLATE + BLUE ACCENT)
+# 1. KONFIGURASI HALAMAN & CUSTOM CSS
 # ==========================================
 st.set_page_config(page_title="AI Learning Impact", page_icon="🎓", layout="wide", initial_sidebar_state="expanded")
 
@@ -37,46 +37,56 @@ st.markdown("""
     }
     
     /* =========================================================
-       OVERRIDE DEFAULT WARNA MERAH STREAMLIT MENJADI BIRU
+       HILANGKAN WARNA MERAH BAWAAN STREAMLIT (UBAH KE BIRU)
        ========================================================= */
        
-    /* 1. Kotak Multiselect (Filter Program Studi & Semester) */
-    .stMultiSelect [data-baseweb="tag"] {
-        background-color: #2563EB !important; /* Biru Royal */
-        border-radius: 6px;
+    /* 1. TABS (Monte Carlo Simulation, dll) */
+    .stTabs [data-baseweb="tab"] p {
+        color: #FFFFFF !important; /* Teks putih biasa */
+        font-size: 16px;           /* Ukuran normal */
+        transition: all 0.3s ease-in-out; /* Animasi mulus */
     }
-    .stMultiSelect [data-baseweb="tag"] span {
-        color: #FFFFFF !important; /* Teks Putih */
-    }
-    .stMultiSelect [data-baseweb="tag"] svg {
-        fill: #FFFFFF !important; /* Ikon silang (x) jadi putih */
-    }
-
-    /* 2. Tombol Primary (Jalankan Simulasi) */
-    .stButton > button[kind="primary"] {
-        background-color: #2563EB !important;
-        border-color: #2563EB !important;
-        color: white !important;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background-color: #1D4ED8 !important; /* Biru lebih gelap saat kursor diarahkan */
-        border-color: #1D4ED8 !important;
-    }
-
-    /* 3. Garis Bawah Tab Aktif (Monte Carlo Simulation) */
+    
+    /* Tab saat sedang di-klik / aktif */
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        border-bottom-color: #2563EB !important;
+        border-bottom-color: #2563EB !important; /* Garis bawah berubah biru */
+        border-bottom-width: 3px !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] p {
-        color: #60A5FA !important; /* Teks Tab aktif menjadi biru cerah */
-        font-weight: 600;
+        font-size: 20px !important; /* Teks membesar! */
+        font-weight: 700 !important;
+        color: #FFFFFF !important;
     }
 
-    /* 4. Bulatan Slider (Profil Simulator) */
+    /* 2. SLIDER (Mengubah warna rel dan bulatan slider jadi biru) */
     .stSlider [data-baseweb="slider"] [role="slider"] {
         background-color: #2563EB !important;
         border-color: #2563EB !important;
     }
+    /* Warna isi/jalur slider */
+    div[data-testid="stTickBar"] ~ div > div > div > div {
+        background-color: #2563EB !important;
+    }
+
+    /* 3. TOMBOL (Jalankan Simulasi) */
+    .stButton > button {
+        background-color: #2563EB !important;
+        border-color: #2563EB !important;
+        color: #FFFFFF !important;
+        border-radius: 8px;
+    }
+    .stButton > button:hover {
+        background-color: #1D4ED8 !important; /* Warna biru lebih gelap saat kursor mendekat */
+        border-color: #1D4ED8 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* 4. MULTISELECT (Filter Sidebar) */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: #2563EB !important;
+        border-radius: 5px;
+    }
+    .stMultiSelect [data-baseweb="tag"] span { color: #FFFFFF !important; }
     
     /* ========================================================= */
 
@@ -107,7 +117,7 @@ st.markdown("""
     
     .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #2D3748; }
     
-    /* === WARNA TEKS UTAMA (PUTIH KALEM) === */
+    /* === WARNA TEKS UTAMA === */
     p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
     </style>
 """, unsafe_allow_html=True)
@@ -393,7 +403,7 @@ with tab3:
         with mc_c1:
             st.markdown("<br>", unsafe_allow_html=True)
             iterations = st.number_input("Jumlah Iterasi", min_value=1000, max_value=50000, value=10000, step=1000)
-            if st.button("🚀 Jalankan Simulasi", use_container_width=True, type="primary"):
+            if st.button("🚀 Jalankan Simulasi", use_container_width=True):
                 st.session_state['run_mc'] = True
                 st.toast("Menyiapkan model stokastik...", icon="⚙️")
             else:
