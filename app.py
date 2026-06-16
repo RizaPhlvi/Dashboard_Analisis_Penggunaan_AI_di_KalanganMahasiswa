@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import time
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN & CUSTOM CSS (ELEGANT DARK MODE)
+# 1. KONFIGURASI HALAMAN & CUSTOM CSS (DARK SLATE + GRID)
 # ==========================================
 st.set_page_config(page_title="AI Learning Impact", page_icon="🎓", layout="wide", initial_sidebar_state="expanded")
 
@@ -19,21 +19,35 @@ st.markdown("""
         color: #E2E8F0;
     }
     
-    [data-testid="stAppViewContainer"] { background-color: #0F172A; }
-    [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
-    [data-testid="stSidebar"] { background-color: #1E293B; border-right: 1px solid #334155; }
+    /* === EFEK BACKGROUND DARK SLATE & GRID BUKU MATEMATIKA === */
+    [data-testid="stAppViewContainer"] { 
+        background-color: #181C25; /* Dark Slate (Abu-abu kehitaman) */
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 25px 25px; /* Ukuran kotak-kotak grid */
+    }
     
-    /* Warna Metrik Angka (Soft Indigo) */
+    [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
+    
+    [data-testid="stSidebar"] { 
+        background-color: #13161C; /* Sidebar sedikit lebih gelap */
+        border-right: 1px solid #2A3143; 
+    }
+    
+    /* Warna Metrik Angka */
     div[data-testid="stMetricValue"] { color: #818CF8; font-weight: 700; font-size: 32px; }
     div[data-testid="stMetricLabel"] { color: #94A3B8; }
     
+    /* Container/Card pelindung grafik agar grid tidak menabrak chart */
     [data-testid="stVerticalBlockBorderWrapper"] > div {
-        background-color: #1E293B !important;
-        border-color: #334155 !important;
+        background-color: #1E2433 !important; /* Slate yang lebih terang dari background */
+        border-color: #2D3748 !important;
         border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Efek mengambang */
     }
     
-    /* Header Box dengan gradasi warna yang elegan dan tidak mencolok */
+    /* Header Box */
     .header-box {
         background: linear-gradient(135deg, #3730A3 0%, #636EFA 100%);
         padding: 30px;
@@ -46,20 +60,20 @@ st.markdown("""
     .header-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
     .header-subtitle { font-size: 18px; opacity: 0.9; margin-top: 0; }
     
-    .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #334155; }
+    .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #2D3748; }
     p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# Palet Warna Elegan (Soft, Muted, Cohesive)
+# Palet Warna Elegan
 SOFT_COLORS = {
-    'primary': '#818CF8',   # Indigo 400 (Soft Blue-Purple)
-    'secondary': '#2DD4BF', # Teal 400 (Soft Tosca)
-    'success': '#34D399',   # Emerald 400 (Soft Green)
-    'danger': '#FB7185',    # Rose 400 (Soft Pinkish-Red)
-    'warning': '#FBBF24',   # Amber 400 (Soft Gold)
-    'purple': '#A78BFA',    # Violet 400 (Soft Purple)
-    'muted': '#94A3B8'      # Slate 400 (Muted Gray)
+    'primary': '#818CF8',   
+    'secondary': '#2DD4BF', 
+    'success': '#34D399',   
+    'danger': '#FB7185',    
+    'warning': '#FBBF24',   
+    'purple': '#A78BFA',    
+    'muted': '#94A3B8'      
 }
 
 PLOTLY_TEMPLATE = 'plotly_dark'
@@ -108,7 +122,7 @@ with st.sidebar:
         st.success("✅ Ketergantungan Aman")
         
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
-    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 6 Juni 2026")
+    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 Juni 2026")
 
 if filter_prodi and filter_semester:
     df = df_raw[(df_raw['Prodi'].isin(filter_prodi)) & (df_raw['Semester'].isin(filter_semester))]
@@ -126,7 +140,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 c_info1, c_info2, c_info3 = st.columns(3)
-c_info1.caption(f"📅 **Update:** 6 Juni 2026")
+c_info1.caption(f"📅 **Update:** Juni 2026")
 c_info2.caption(f"👨‍💻 **Developer:** Ahmad Rizza Pahlevi")
 c_info3.caption(f"📊 **Total Dataset:** {len(df)} Responden Ditampilkan")
 st.divider()
@@ -176,7 +190,6 @@ with tab1:
         fig_hero = px.bar(
             trend_data, x='Frekuensi', y='Jumlah', 
             text='Jumlah', color='Frekuensi',
-            # Menggunakan palet urutan warna elegan yang senada
             color_discrete_sequence=[SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple'], SOFT_COLORS['muted']],
             template=PLOTLY_TEMPLATE
         )
@@ -191,7 +204,6 @@ with tab1:
             fig_pie = px.pie(
                 df, names='Is_Ketergantungan_Tinggi', hole=0.5,
                 color='Is_Ketergantungan_Tinggi',
-                # Merah muda kalem untuk bahaya, hijau tosca kalem untuk aman
                 color_discrete_map={'Tinggi (>5 Tugas)': SOFT_COLORS['danger'], 'Rendah (<=5 Tugas)': SOFT_COLORS['secondary']},
                 template=PLOTLY_TEMPLATE
             )
@@ -243,7 +255,6 @@ with tab1:
         fig_nilai.update_layout(height=350, xaxis_title="Persepsi Nilai", margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
         st.plotly_chart(update_dark_layout(fig_nilai), use_container_width=True)
 
-
 # ==========================================
 # TAB 2: HUBUNGAN & PROBABILITAS
 # ==========================================
@@ -271,7 +282,7 @@ with tab2:
             
             fig_heat = px.imshow(
                 corr_matrix, text_auto=".3f", aspect="auto",
-                color_continuous_scale="Blues_r", # Warna gradasi biru yang terkesan sangat ilmiah dan bersih
+                color_continuous_scale="Blues_r", 
                 origin="lower", 
                 template=PLOTLY_TEMPLATE
             )
@@ -290,7 +301,6 @@ with tab2:
                 df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', 
                 opacity=0.8, template=PLOTLY_TEMPLATE
             )
-            # Titik warna tosca lembut, garis tren warna merah muda lembut
             fig_scatter.update_traces(marker=dict(size=12, color=SOFT_COLORS['secondary']))
             fig_scatter.add_trace(go.Scatter(
                 x=df_sorted['Porsi_Tugas_AI'], y=p(df_sorted['Porsi_Tugas_AI']), 
@@ -316,7 +326,7 @@ with tab2:
         fig_cp = px.bar(
             cp_grouped, x='Porsi_Tugas_AI', y='Tingkat_Copy_Paste', 
             text_auto='.2f', color='Tingkat_Copy_Paste', 
-            color_continuous_scale="Purples", # Gradasi warna ungu yang selaras dan kalem
+            color_continuous_scale="Purples", 
             template=PLOTLY_TEMPLATE
         )
         fig_cp.update_traces(textposition='outside')
@@ -369,7 +379,6 @@ with tab3:
                 col_m3.metric("95% Confidence Interval", f"{ci_low:.2f} - {ci_high:.2f}")
                 
                 fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template=PLOTLY_TEMPLATE)
-                # Garis utama warna soft Indigo, batas target warna Rose
                 fig_run.update_traces(line=dict(color=SOFT_COLORS['primary'], width=2))
                 fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=SOFT_COLORS['danger'], annotation_text="Titik Konvergen")
                 fig_run.update_layout(title="Kurva Konvergensi", xaxis_title="Iterasi", yaxis_title="Running Mean", height=300)
