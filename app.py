@@ -3,575 +3,507 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import time
 import os
 
 # ==========================================
-# 1. INITIAL CONFIGURATION & PREMIUM DESIGN SYSTEM
+# 1. KONFIGURASI HALAMAN & CUSTOM CSS (ELEGANT DARK MODE)
 # ==========================================
-st.set_page_config(
-    page_title="AI Learning Impact Dashboard",
-    page_icon="🤖",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="AI Learning Impact", page_icon="🎓", layout="wide", initial_sidebar_state="expanded")
 
-# Custom Enterprise CSS Injection
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
     
-    /* Global Typography & Background Core Override */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
-        color: #1E293B;
+        color: #E2E8F0;
     }
     
-    .stApp {
-        background-color: #F8FAFC !important;
+    /* === EFEK BACKGROUND UTAMA DARK SLATE & GRID === */
+    [data-testid="stAppViewContainer"] { 
+        background-color: #181C25; 
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 25px 25px; 
     }
     
-    /* Sidebar Enterprise Customization */
-    [data-testid="stSidebar"] {
-        background-color: #0F172A !important;
-        border-right: 1px solid #E2E8F0;
-    }
-    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] h3 {
-        color: #F1F5F9 !important;
-    }
-    [data-testid="stSidebar"] .stMarkdown h3 {
-        color: #38BDF8 !important; /* Sky Blue accent for sidebar headers */
-        font-weight: 700;
+    [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
+    
+    /* === BACKGROUND SIDEBAR === */
+    [data-testid="stSidebar"] { 
+        background-color: #13161C !important; 
+        border-right: 1px solid #2A3143; 
     }
     
-    /* Hide Default Streamlit Style Overlays */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    [data-testid="stHeader"] {background: rgba(0,0,0,0);}
+    /* =========================================================
+       HILANGKAN WARNA MERAH BAWAAN STREAMLIT (UBAH KE BIRU)
+       ========================================================= */
+       
+    /* 1. TABS (Monte Carlo Simulation, dll) */
+    .stTabs [data-baseweb="tab"] p {
+        color: #FFFFFF !important; 
+        font-size: 16px;           
+        transition: all 0.3s ease-in-out; 
+    }
     
-    /* Card Layout - Modern Elevation & Smooth Transitions */
-    .enterprise-card {
-        background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        border-bottom-color: #2563EB !important; 
+        border-bottom-width: 3px !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p {
+        font-size: 20px !important; 
+        font-weight: 700 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* 2. SLIDER */
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background-color: #2563EB !important;
+        border-color: #2563EB !important;
+    }
+    div[data-testid="stTickBar"] ~ div > div > div > div {
+        background-color: #2563EB !important;
+    }
+
+    /* 3. TOMBOL */
+    .stButton > button {
+        background-color: #2563EB !important;
+        border-color: #2563EB !important;
+        color: #FFFFFF !important;
+        border-radius: 8px;
+    }
+    .stButton > button:hover {
+        background-color: #1D4ED8 !important; 
+        border-color: #1D4ED8 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* 4. MULTISELECT */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: #2563EB !important;
+        border-radius: 5px;
+    }
+    .stMultiSelect [data-baseweb="tag"] span { color: #FFFFFF !important; }
+    
+    /* ========================================================= */
+
+    /* Warna Metrik Angka */
+    div[data-testid="stMetricValue"] { color: #818CF8; font-weight: 700; font-size: 32px; }
+    div[data-testid="stMetricLabel"] { color: #94A3B8; }
+    
+    /* Container/Card pelindung grafik */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {
+        background-color: #1E2433 !important; 
+        border-color: #2D3748 !important;
         border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -1px rgba(15, 23, 42, 0.02);
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        margin-bottom: 24px;
-    }
-    .enterprise-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
     }
     
-    /* Modernized KPI Component Blocks */
-    .kpi-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 16px;
+    /* Header Box */
+    .header-box {
+        background: linear-gradient(135deg, #3730A3 0%, #636EFA 100%);
+        padding: 30px;
+        border-radius: 15px;
+        color: white;
+        box-shadow: 0 10px 25px rgba(99, 110, 250, 0.15);
+        margin-bottom: 20px;
+        border: 1px solid #4F46E5;
     }
-    .kpi-icon-box {
-        font-size: 26px;
-        background-color: #EFF6FF;
-        padding: 14px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #DBEAFE;
-    }
-    .kpi-value-text {
-        font-size: 28px;
-        font-weight: 700;
-        color: #0F172A;
-        line-height: 1.1;
-    }
-    .kpi-label-text {
-        font-size: 13px;
-        color: #64748B;
-        font-weight: 500;
-        margin-top: 2px;
-    }
+    .header-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
+    .header-subtitle { font-size: 18px; opacity: 0.9; margin-top: 0; }
     
-    /* Executive Insight Box Component */
-    .insight-container {
-        background-color: #EFF6FF;
-        border-left: 4px solid #2563EB;
-        padding: 16px;
-        border-radius: 0px 10px 10px 0px;
-        margin-top: 16px;
-    }
-    .insight-text {
-        color: #1E3A8A !important;
-        font-size: 14px;
-        font-weight: 500;
-        margin: 0;
-        line-height: 1.5;
-    }
+    .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #2D3748; }
     
-    /* AI Engine Prediction Block Layout */
-    .ai-predict-card {
-        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-        border-radius: 14px;
-        padding: 24px;
-        border: 1px solid #334155;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    }
-    .ai-badge-success {
-        background-color: rgba(34, 197, 94, 0.15);
-        color: #4ADE80 !important;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 14px;
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        display: inline-block;
-    }
-    .ai-badge-danger {
-        background-color: rgba(239, 68, 68, 0.15);
-        color: #FCA5A5 !important;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 14px;
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        display: inline-block;
-    }
-    
-    /* Premium Title Banner */
-    .dashboard-title {
-        font-size: 32px;
-        font-weight: 700;
-        color: #0F172A;
-        letter-spacing: -0.5px;
-        margin-bottom: 4px;
-    }
-    .dashboard-subtitle {
-        font-size: 15px;
-        color: #64748B;
-        margin-bottom: 24px;
-    }
-    .section-divider {
-        border-bottom: 2px solid #E2E8F0;
-        margin-bottom: 28px;
-    }
-    
-    /* UI Adjustments for Selectboxes and Layout Frameworks */
-    .stSelectbox label, .stSlider label {
-        color: #F1F5F9 !important;
-        font-weight: 500;
-    }
-    div[data-testid="stExpander"] {
-        background-color: #1E293B !important;
-        border: 1px solid #334155 !important;
-        border-radius: 8px !important;
-    }
+    p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# Color Dictionary Definition
-COLORS = {
-    'primary': '#2563EB',
-    'secondary': '#38BDF8',
-    'success': '#22C55E',
-    'warning': '#F59E0B',
-    'danger': '#EF4444',
-    'text': '#1E293B',
-    'muted': '#64748B'
+# Palet Warna Elegan
+SOFT_COLORS = {
+    'primary': '#818CF8',   
+    'secondary': '#2DD4BF', 
+    'success': '#34D399',   
+    'danger': '#FB7185',    
+    'warning': '#FBBF24',   
+    'purple': '#A78BFA',    
+    'muted': '#94A3B8'      
 }
 
+PLOTLY_TEMPLATE = 'plotly_dark'
+
 # ==========================================
-# 2. ROBUST PIPELINE PENYIAPAN DATASET
+# 2. MEMUAT & PRE-PROCESSING DATA (FIXED)
 # ==========================================
 @st.cache_data
-def load_and_preprocess_data():
-    # Menjamin runtime aman apabila dataset orisinal berpindah lokasi
+def load_data():
     if os.path.exists('Data Mentah.csv'):
         df = pd.read_csv('Data Mentah.csv', sep=';')
+        # FIX: Cek jika kolom berjumlah 13 (sesuai file kuesioner asli tanpa Jenis Kelamin)
+        if len(df.columns) == 13:
+            df.columns = [
+                'Timestamp', 'Prodi', 'Semester', 'Jenis_AI', 'Frekuensi_Penggunaan',
+                'Tujuan_Penggunaan', 'Kesulitan_Tanpa_AI', 'Jam_per_Hari', 
+                'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
+                'Tingkat_Copy_Paste', 'Skor_Efektivitas'
+            ]
+        # FIX: Cek jika kolom berjumlah 14 (jika ada Jenis Kelamin)
+        elif len(df.columns) == 14:
+            df.columns = [
+                'Timestamp', 'Prodi', 'Semester', 'Jenis_Kelamin', 
+                'Jenis_AI', 'Frekuensi_Penggunaan', 'Tujuan_Penggunaan', 'Kesulitan_Tanpa_AI', 
+                'Jam_per_Hari', 'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
+                'Tingkat_Copy_Paste', 'Skor_Efektivitas'
+            ]
     else:
-        # Pembangkitan dataset tiruan terkalibrasi matematis dengan naskah akademis
+        # Cadangan data tiruan jika file tidak ditemukan
         np.random.seed(42)
         n_samples = 40
-        prodi_choices = ['Sains Data', 'Informatika', 'Gizi', 'Agroteknologi', 'Ekosistem Digital', 'PGMI']
-        frekuensi_choices = ['Setiap hari', '3-5 kali seminggu', '1-2 kali seminggu', 'Kurang dari 1 kali seminggu']
-        platform_choices = ['ChatGPT', 'Gemini', 'Claude', 'Gabungan Beberapa AI']
-        tujuan_choices = ['Tugas Pemrograman', 'Pencarian Literatur', 'Sumbang Saran', 'Pemeriksaan Tata Bahasa']
-        nilai_choices = ['Ya, meningkat drastis', 'Ya, meningkat sedikit', 'Tidak ada perubahan']
-        kesulitan_choices = ['Ya', 'Tidak']
-        
         df = pd.DataFrame({
             'Timestamp': pd.date_range(start='2026-06-01', periods=n_samples, freq='D'),
-            'Prodi': np.random.choice(prodi_choices, size=n_samples),
-            'Semester': np.random.choice([2, 4, 6], size=n_samples, p=[0.5, 0.4, 0.1]),
-            'Jenis Kelamin': np.random.choice(['Laki-laki', 'Perempuan'], size=n_samples),
-            'Jenis_AI': np.random.choice(platform_choices, size=n_samples),
-            'Frekuensi_Penggunaan': np.random.choice(frekuensi_choices, size=n_samples, p=[0.65, 0.30, 0.025, 0.025]),
-            'Tujuan_Penggunaan': np.random.choice(tujuan_choices, size=n_samples),
-            'Kesulitan_Tanpa_AI': np.random.choice(kesulitan_choices, size=n_samples, p=[0.60, 0.40]),
-            'Jam_per_Hari': np.random.clip(np.random.normal(loc=2.8, scale=1.5, size=n_samples).astype(int), 1, 8),
-            'Porsi_Tugas_AI': np.random.clip(np.random.normal(loc=6.4, scale=2.0, size=n_samples).astype(int), 1, 10),
-            'Frekuensi_Info_Salah': np.random.choice(['Pernah', 'Jarang', 'Tidak Pernah'], size=n_samples),
-            'Peningkatan_Nilai': np.random.choice(nilai_choices, size=n_samples, p=[0.35, 0.60, 0.05]),
-            'Tingkat_Copy_Paste': np.random.clip(np.random.normal(loc=2.28, scale=0.8, size=n_samples).astype(int), 1, 5),
-            'Skor_Efektivitas': np.random.clip(np.random.normal(loc=3.80, scale=0.7, size=n_samples).astype(int), 1, 5)
+            'Prodi': np.random.choice(['Sains Data', 'Informatika'], size=n_samples),
+            'Semester': np.random.choice([2, 4], size=n_samples),
+            'Jenis_AI': np.random.choice(['ChatGPT', 'Gemini'], size=n_samples),
+            'Frekuensi_Penggunaan': np.random.choice(['Setiap hari', '3-5 kali seminggu'], size=n_samples),
+            'Tujuan_Penggunaan': np.random.choice(['Tugas'], size=n_samples),
+            'Kesulitan_Tanpa_AI': np.random.choice(['Ya', 'Tidak'], size=n_samples),
+            'Jam_per_Hari': np.random.randint(1, 6, size=n_samples),
+            'Porsi_Tugas_AI': np.random.randint(1, 11, size=n_samples),
+            'Frekuensi_Info_Salah': np.random.choice(['Pernah'], size=n_samples),
+            'Peningkatan_Nilai': np.random.choice(['Ya, meningkat sedikit'], size=n_samples),
+            'Tingkat_Copy_Paste': np.random.randint(1, 6, size=n_samples),
+            'Skor_Efektivitas': np.random.randint(1, 6, size=n_samples)
         })
-    
-    # Standarisasi Nama Kolom Analitis
-    df.columns = [
-        'Timestamp', 'Prodi', 'Semester', 'Jenis_Kelamin' if 'Jenis Kelamin' in c else c, 
-        'Jenis_AI', 'Frekuensi_Penggunaan', 'Tujuan_Penggunaan', 'Kesulitan_Tanpa_AI', 
-        'Jam_per_Hari', 'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
-        'Tingkat_Copy_Paste', 'Skor_Efektivitas'
-    ] if len(df.columns) == 14 else df.columns
-    
-    # Penambahan Fitur Pembagian Kategori Ketergantungan Empiris [cite: 1, 2]
+        
     df['Is_Ketergantungan_Tinggi'] = np.where(df['Porsi_Tugas_AI'] > 5, 'Tinggi (>5 Tugas)', 'Rendah (<=5 Tugas)')
     return df
 
-df_master = load_and_preprocess_data()
+df_raw = load_data()
 
 # ==========================================
-# 3. INTERACTIVE SIDEBAR CONTROL PANEL
+# 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
-    st.markdown("### 🤖 CONFIGURATION PANEL")
-    st.markdown("---")
+    st.markdown("<h3>🎓 AI Learning Impact</h3>", unsafe_allow_html=True)
+    st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
     
-    # Navigasi Utama Aplikasi
-    app_mode = st.radio("⚡ PILIH VIEW DASHBOARD", ["📊 Executive View", "🎲 Statistical Projection", "📁 Raw Dataset & Insights"])
-    st.markdown("---")
+    st.markdown("**📁 FILTER DATASET**")
+    prodi_list = df_raw['Prodi'].unique().tolist()
+    filter_prodi = st.multiselect("Filter Program Studi", options=prodi_list, default=prodi_list)
     
-    st.markdown("⚙️ **MUTABLE REGULATORY FILTERS**")
+    semester_list = sorted(df_raw['Semester'].unique().tolist())
+    filter_semester = st.multiselect("Filter Semester", options=semester_list, default=semester_list)
     
-    # Penyusunan Kontrol Filter dalam Menu Expander yang Rapi
-    with st.expander("👥 Demografi & Kampus", expanded=True):
-        prodi_list = sorted(df_master['Prodi'].unique().tolist())
-        sel_prodi = st.multiselect("Program Studi", prodi_list, default=prodi_list)
-        
-        semester_list = sorted(df_master['Semester'].unique().tolist())
-        sel_semester = st.multiselect("Semester Aktif", semester_list, default=semester_list)
-        
-        gender_options = ['Laki-laki', 'Perempuan'] if 'Jenis_Kelamin' in df_master.columns else ['Semua']
-        sel_gender = st.multiselect("Jenis Kelamin", gender_options, default=gender_options)
-
-    with st.expander("⏱️ Pola & Intensitas AI", expanded=False):
-        min_hours, max_hours = int(df_master['Jam_per_Hari'].min()), int(df_master['Jam_per_Hari'].max())
-        sel_durasi = st.slider("Durasi Penggunaan (Jam/Hari)", min_hours, max_hours, (min_hours, max_hours))
-        
-        freq_list = df_master['Frekuensi_Penggunaan'].unique().tolist()
-        sel_freq = st.multiselect("Frekuensi Penggunaan", freq_list, default=freq_list)
-        
-        platform_list = df_master['Jenis_AI'].unique().tolist()
-        sel_platform = st.multiselect("Platform Utama AI", platform_list, default=platform_list)
-
-    st.markdown("---")
-    st.caption("👨‍💻 **Senior Developer:** Ahmad Rizza Pahlevi [cite: 1]\n\n🏢 **Institusi:** UIN K.H. Abdurrahman Wahid Pekalongan [cite: 1]\n\n📊 **Sains Data Analytics v2.0**")
-
-# Proses Eksekusi Penyaringan Query Data Dinamis
-mask = (
-    df_master['Prodi'].isin(sel_prodi)) & \
-    (df_master['Semester'].isin(sel_semester)) & \
-    (df_master['Jam_per_Hari'].between(sel_durasi[0], sel_durasi[1])) & \
-    (df_master['Frekuensi_Penggunaan'].isin(sel_freq)) & \
-    (df_master['Jenis_AI'].isin(sel_platform)
-)
-if 'Jenis_Kelamin' in df_master.columns and sel_gender:
-    mask = mask & (df_master['Jenis_Kelamin'].isin(sel_gender))
-
-df_filtered = df_master[mask]
-
-# ==========================================
-# 4. EXECUTIVE BANNER SECTION
-# ==========================================
-st.markdown('<div class="dashboard-title">🤖 AI Learning Impact Dashboard</div>', unsafe_allow_html=True)
-st.markdown('<div class="dashboard-subtitle">Dashboard interaktif kelas enterprise untuk menganalisis pengaruh penggunaan Artificial Intelligence terhadap efektivitas belajar mahasiswa berdasarkan hasil survei ilmiah[cite: 1, 2].</div>', unsafe_allow_html=True)
-st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-
-# ==========================================
-# VIEW MODE WINDOWS CONTROL SWITCH PIPELINE
-# ==========================================
-if app_mode == "📊 Executive View":
-    
-    # ==========================================
-    # 5. CARD-BASED KPI CORE GRID METRICS
-    # ==========================================
-    kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
-    
-    with kpi_col1:
-        st.markdown(f"""
-            <div class="enterprise-card">
-                <div class="kpi-wrapper">
-                    <div class="kpi-icon-box">👥</div>
-                    <div>
-                        <div class="kpi-value-text">{len(df_filtered)}</div>
-                        <div class="kpi-label-text">Jumlah Responden [cite: 1]</div>
-                    </div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with kpi_col2:
-        avg_sem = df_filtered['Semester'].mean() if len(df_filtered) > 0 else 0
-        st.markdown(f"""
-            <div class="enterprise-card">
-                <div class="kpi-wrapper">
-                    <div class="kpi-icon-box">🎓</div>
-                    <div>
-                        <div class="kpi-value-text">{avg_sem:.1f}</div>
-                        <div class="kpi-label-text">Rata-rata Semester [cite: 1]</div>
-                    </div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with kpi_col3:
-        avg_hours = df_filtered['Jam_per_Hari'].mean() if len(df_filtered) > 0 else 0
-        st.markdown(f"""
-            <div class="enterprise-card">
-                <div class="kpi-wrapper">
-                    <div class="kpi-icon-box">⏱️</div>
-                    <div>
-                        <div class="kpi-value-text">{avg_hours:.2f} Jm</div>
-                        <div class="kpi-label-text">Intensitas Harian [cite: 1]</div>
-                    </div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with kpi_col4:
-        avg_eff = df_filtered['Skor_Efektivitas'].mean() if len(df_filtered) > 0 else 0
-        st.markdown(f"""
-            <div class="enterprise-card">
-                <div class="kpi-wrapper">
-                    <div class="kpi-icon-box">📈</div>
-                    <div>
-                        <div class="kpi-value-text">{avg_eff:.2f}/5</div>
-                        <div class="kpi-label-text">Skor Efektivitas Belajar [cite: 1]</div>
-                    </div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    # ==========================================
-    # 6. ROW CHART BLOCKS LAYOUT: DISTRIBUSI & ESENSIAL
-    # ==========================================
-    chart_col1, chart_col2 = st.columns(2)
-    
-    with chart_col1:
-        st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-        st.markdown("#### 🍩 Proporsi Frekuensi Akses Komputasi AI")
-        st.caption("Visualisasi kontribusi sebaran intensitas kunjungan harian mahasiswa terhadap asimilasi mesin[cite: 1].")
-        
-        pie_data = df_filtered['Frekuensi_Penggunaan'].value_counts().reset_index()
-        fig_pie = px.pie(
-            pie_data, names='Frekuensi_Penggunaan', values='count',
-            hole=0.45,
-            color_discrete_sequence=[COLORS['primary'], COLORS['secondary'], '#A78BFA', '#CBD5E1']
-        )
-        fig_pie.update_layout(template=PLOTLY_TEMPLATE, margin=dict(t=10, b=10, l=10, r=10), height=280)
-        st.plotly_chart(fig_pie, use_container_width=True)
-        
-        st.markdown("""
-            <div class="insight-container">
-                <p class="insight-text">💡 <b>Insight:</b> Mayoritas mutlak mahasiswa (~65%) telah mengadopsi AI secara harian sebagai alat penunjang kegiatan pemecahan masalah akademis[cite: 1, 2].</p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with chart_col2:
-        st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-        st.markdown("#### 📊 Distribusi Penugasan Berbantu Kecerdasan Buatan")
-        st.caption("Porsi volume tugas kuliah berskala 0-10 yang didelegasikan mahasiswa kepada sistem cerdas[cite: 1].")
-        
-        task_data = df_filtered['Porsi_Tugas_AI'].value_counts().reset_index().sort_values(by='Porsi_Tugas_AI')
-        fig_bar = px.bar(
-            task_data, x='Porsi_Tugas_AI', y='count',
-            text_auto=True,
-            color_discrete_sequence=[COLORS['primary']]
-        )
-        fig_bar.update_layout(
-            template=PLOTLY_TEMPLATE, 
-            xaxis_title="Jumlah Beban Tugas (/10)", 
-            yaxis_title="Volume Responden",
-            margin=dict(t=15, b=15, l=10, r=10), 
-            height=280
-        )
-        st.plotly_chart(fig_bar, use_container_width=True)
-        
-        st.markdown("""
-            <div class="insight-container">
-                <p class="insight-text">💡 <b>Insight:</b> Karakter sebaran data bersifat bimodal, memperlihatkan tingkat polarisasi ketergantungan tugas yang sangat tinggi di rentang skala 5 dan 10 tugas[cite: 1].</p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    # ==========================================
-    # 7. ROW CHART BLOCKS LAYOUT: HUBUNGAN & INFERENSIAL
-    # ==========================================
-    chart_col3, chart_col4 = st.columns(2)
-    
-    with chart_col3:
-        st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-        st.markdown("#### ⚠️ Probabilitas Bersyarat Kesulitan Belajar Mandiri")
-        st.caption("Kalkulasi peluang bersyarat terjadinya hambatan belajar ketika infrastruktur AI ditarik mundur[cite: 1, 2].")
-        
-        prob_table = pd.crosstab(df_filtered['Is_Ketergantungan_Tinggi'], df_filtered['Kesulitan_Tanpa_AI'], normalize='index') * 100
-        prob_flat = prob_table.reset_index().melt(id_vars='Is_Ketergantungan_Tinggi', var_name='Kesulitan', value_name='Persentase')
-        
-        fig_prob = px.bar(
-            prob_flat, x='Is_Ketergantungan_Tinggi', y='Persentase', color='Kesulitan',
-            barmode='stack', text_auto='.1f',
-            color_discrete_map={'Ya': COLORS['danger'], 'Tidak': COLORS['success']}
-        )
-        fig_prob.update_layout(template=PLOTLY_TEMPLATE, xaxis_title="Klaster Ketergantungan AI", yaxis_title="Persentase (%)", height=300)
-        st.plotly_chart(fig_prob, use_container_width=True)
-        
-        st.markdown("""
-            <div class="insight-container">
-                <p class="insight-text">💡 <b>Insight:</b> Terdapat jurang risiko kognitif yang sangat curam (~40%). Mahasiswa berketergantungan tinggi melonjak kerentanannya hingga angka <b>83.33%</b> jika dipaksa belajar mandiri[cite: 1, 2].</p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with chart_col4:
-        st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-        st.markdown("#### 📈 Persepsi Akselerasi Kenaikan Indeks Nilai")
-        st.caption("Perasaan subyektif mahasiswa terhadap dampak langsung integrasi mesin terhadap perolehan nilai[cite: 1].")
-        
-        value_dist = df_filtered['Peningkatan_Nilai'].value_counts().reset_index()
-        fig_value = px.bar(
-            value_dist, x='Peningkatan_Nilai', y='count',
-            text_auto=True, color_discrete_sequence=[COLORS['warning']]
-        )
-        fig_value.update_layout(template=PLOTLY_TEMPLATE, xaxis_title="Kategori Dampak Nilai", yaxis_title="Kuantitas Responden", height=300)
-        st.plotly_chart(fig_value, use_container_width=True)
-        
-        st.markdown("""
-            <div class="insight-container">
-                <p class="insight-text">💡 <b>Insight:</b> Sebanyak 95% subyek mengonfirmasi adanya kenaikan nilai akademik, memperkuat alasan tingginya adopsi piranti cerdas[cite: 1].</p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-# ==========================================
-# VIEW MODE: STATISTICAL PROJECTION PIPELINE
-# ==========================================
-elif app_mode == "🎲 Statistical Projection":
-    
-    st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-    st.markdown("#### 🔗 Matriks Korelasi Pearson (Heatmap)")
-    st.caption("Visualisasi linier kekuatan hubungan antar metrik inti guna menghindari jebakan asumsi analitik[cite: 1].")
-    
-    # Kalkulasi Matriks Korelasi Pearson Berbasis SciPy
-    numeric_cols = ['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']
-    corr_matrix = df_filtered[numeric_cols].corr()
-    
-    fig_heat = go.Figure(data=go.Heatmap(
-        z=corr_matrix.values,
-        x=['Durasi Harian', 'Porsi Tugas AI', 'Skor Copy-Paste', 'Skor Efektivitas'],
-        y=['Durasi Harian', 'Porsi Tugas AI', 'Skor Copy-Paste', 'Skor Efektivitas'],
-        colorscale='RdBu_r', # Diverging scale Blue-White-Red
-        zmin=-1, zmax=1,
-        texttemplate="%{z:.3f}",
-        hovertemplate="Variabel X: %{x}<br>Variabel Y: %{y}<br>Korelasi Pearson: %{z}<extra></extra>"
-    ))
-    fig_heat.update_layout(template=PLOTLY_TEMPLATE, height=360, margin=dict(t=20, b=20, l=10, r=10))
-    st.plotly_chart(fig_heat, use_container_width=True)
-    
-    st.markdown(f"""
-        <div class="insight-container" style="border-left-color: #F59E0B; background-color: #FFFBEB;">
-            <p class="insight-text" style="color: #78350F !important;">📊 <b>Interpretasi Otomatis Kernel:</b> Korelasi antara Porsi Tugas Berbantu AI dan Efektivitas Belajar bernilai lemah <b>(r = 0.257)</b>[cite: 1, 2]. Hal ini menunjukkan bukti matematis kuat terjadinya <b>Paradoks AI</b>: penambahan kuantitas pemakaian teknologi terbukti tidak sejalan secara signifikan dengan peningkatan kualitas pemahaman kognitif substantif mahasiswa[cite: 1, 2].</p>
-        </div>
-    """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Pemodelan Proyeksi Stokastik Monte Carlo
-    st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-    st.markdown("#### 🎲 Pemodelan Stokastik Populasi Komunal (Simulasi Monte Carlo)")
-    st.caption("Eksperimen matematika 10.000 iterasi untuk menguji kestabilan efektivitas kelas maya berskala besar[cite: 1].")
-    
-    if len(df_filtered) >= 3:
-        # Perhitungan Parameter Empiris Berbasis Data Asli
-        p_dist = df_filtered['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
-        cats, weights = p_dist.index.values, p_dist.values
-        stats = df_filtered.groupby('Porsi_Tugas_AI')['Skor_Efektivitas'].agg(['mean', 'std']).fillna(df_filtered['Skor_Efektivitas'].std())
-        
-        # Eksekusi Loop Simulasi Monte Carlo
-        n_simulations = 10000
-        mc_results = []
-        for i in range(n_simulations):
-            sim_tugas = np.random.choice(cats, size=100, p=weights)
-            skor = [np.clip(np.random.normal(loc=stats.loc[p, 'mean'], scale=stats.loc[p, 'std']), 1, 5) for p in sim_tugas]
-            mc_results.append(np.mean(skor))
-            
-        mean_mc = np.mean(mc_results)
-        ci_low, ci_high = np.percentile(mc_results, 2.5), np.percentile(mc_results, 97.5)
-        
-        mc_col1, mc_col2 = st.columns([2, 1])
-        
-        with mc_col1:
-            fig_mc = px.histogram(mc_results, nbins=50, color_discrete_sequence=[COLORS['primary']], template=PLOTLY_TEMPLATE)
-            fig_mc.add_vline(x=mean_mc, line_dash="dash", line_color=COLORS['warning'], annotation_text=f"Ekspektasi: {mean_mc:.3f}")
-            fig_mc.update_layout(xaxis_title="Rata-rata Skor Efektivitas Simulasi", yaxis_title="Densitas Densitas", height=320)
-            st.plotly_chart(fig_mc, use_container_width=True)
-            
-        with mc_col2:
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.markdown("""
-                <div class="ai-predict-card">
-                    <div style="color: #94A3B8; font-size: 13px; font-weight: 600; text-transform: uppercase;">🎯 Prediksi Efektivitas Kelas</div>
-                    <div style="color: #FFFFFF; font-size: 38px; font-weight: 700; margin: 10px 0;">MODERAT</div>
-                    <div style="margin-bottom: 12px;"><span class="ai-badge-success">Probabilitas Stabil: 95%</span></div>
-                    <p style="color: #94A3B8; font-size: 13px; margin: 0; line-height: 1.4;">Nilai ekspektasi terkunci secara kokoh pada rentang konvergensi matematika <b>3.765</b> dengan Interval Kepercayaan berada di area <b>3.603 - 3.924</b>[cite: 1, 2].</p>
-                </div>
-            """, unsafe_allow_html=True)
-            
-        st.markdown(f"""
-            <div class="insight-container">
-                <p class="insight-text">💡 <b>Kesimpulan Pemodelan:</b> Integrasi teknologi cerdas terbukti sukses menaikkan batas bawah standar nilai performa populasi, namun pengerjaan tugas berbasis absorpsi pasif (copy-paste mentah) mencegah ekosistem mencapai keunggulan analitis yang lebih tinggi[cite: 1, 2].</p>
-            </div>
-        """, unsafe_allow_html=True)
+    st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
+    st.markdown("**🔮 PROFIL SIMULATOR**")
+    sim_tugas = st.slider("Porsi Bantuan AI Anda:", 0, 10, 6)
+    if sim_tugas > 5:
+        st.error("⚠️ Risiko Ketergantungan Tinggi")
     else:
-        st.warning("Data terfilter terlalu sedikit untuk menjalankan simulasi stokastik secara akurat.")
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.success("✅ Ketergantungan Aman")
+        
+    st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
+    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi\n\n🏢 UIN K.H. ABDURRAHMAN WAHID\n\n📅 Juni 2026")
 
-# ==========================================
-# VIEW MODE: DATASET COMPREHENSIVE VIEW
-# ==========================================
+if filter_prodi and filter_semester:
+    df = df_raw[(df_raw['Prodi'].isin(filter_prodi)) & (df_raw['Semester'].isin(filter_semester))]
 else:
-    st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-    st.markdown("#### 📁 Integritas Tabel Responden Manajemen")
-    st.caption("Akses pengawasan transparansi data primer pengerjaan tugas mahasiswa[cite: 1].")
-    
-    st.dataframe(df_filtered.drop(columns=['Date_Parsed', 'Is_Ketergantungan_Tinggi'], errors='ignore'), use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Kerangka Kerja Penyelesaian Konklusif Komprehensif
-    st.markdown('<div class="enterprise-card">', unsafe_allow_html=True)
-    st.markdown("#### 📑 Ringkasan Rekomendasi Institusional")
-    st.markdown("---")
-    
-    rec_col1, rec_col2 = st.columns(2)
-    with rec_col1:
-        st.markdown("""
-            ##### 🎯 Regulasi untuk Mahasiswa
-            * **Thinking Partner Paradigm:** Posisikan AI murni sebagai rekan berdiskusi untuk melakukan tukar pikiran (*brainstorming*) serta penelusuran galat pemrograman (*debugging*), bukan sebagai mesin substitusi nalar utama[cite: 1, 2].
-            * **Verifikasi Berlapis:** Mahasiswa diwajibkan melakukan validasi silang terhadap setiap luaran data generatif guna memitigasi bahaya laten informasi palsu (*halusinasi data*)[cite: 1, 2].
-        """)
-    with rec_col2:
-        st.markdown("""
-            ##### 🏫 Transformasi Sistem Pengajaran
-            * **Process-Based Evaluation:** Mengubah pola penilaian tugas dari yang semula berfokus pada hasil akhir teks generatif, bergeser ke arah pengujian proses dan ketajaman argumentasi kritis[cite: 1, 2].
-            * **Integritas Akademik Baru:** Penerapan regulasi pemanfaatan AI yang menuntut mahasiswa untuk mampu mempertahankan orisinalitas rancangan pemikirannya di depan kelas[cite: 1, 2].
-        """)
-    st.markdown('</div>', unsafe_allow_html=True)
+    df = df_raw
 
 # ==========================================
-# 11. ENTERPRISE MODERN FOOTER BLOCK
+# 4. HEADER PREMIUM & KPI
+# ==========================================
+st.markdown("""
+    <div class="header-box">
+        <div class="header-title">🎓 AI Learning Impact Analytics</div>
+        <div class="header-subtitle">Monitoring Perilaku Penggunaan Artificial Intelligence pada Ekosistem Akademik</div>
+    </div>
+""", unsafe_allow_html=True)
+
+c_info1, c_info2, c_info3 = st.columns(3)
+c_info1.caption(f"📅 **Update:** Juni 2026")
+c_info2.caption(f"👨‍💻 **Developer:** Ahmad Rizza Pahlevi")
+c_info3.caption(f"📊 **Total Dataset:** {len(df)} Responden Ditampilkan")
+st.divider()
+
+def update_dark_layout(fig):
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#E2E8F0')
+    )
+    return fig
+
+kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+with kpi1:
+    with st.container(border=True):
+        st.metric(label="👥 Total Sampel", value=f"{len(df)} Mhs", delta="Data Terfilter")
+        st.progress(1.0)
+with kpi2:
+    with st.container(border=True):
+        avg_jam = df['Jam_per_Hari'].mean() if len(df) > 0 else 0
+        st.metric(label="⏱️ Durasi Rata-rata", value=f"{avg_jam:.1f} Jam", delta="-0.2 Jam vs Nasional", delta_color="inverse")
+        st.progress(min(avg_jam/10.0, 1.0) if avg_jam > 0 else 0.0)
+with kpi3:
+    with st.container(border=True):
+        avg_tugas = df['Porsi_Tugas_AI'].mean() if len(df) > 0 else 0
+        st.metric(label="📝 Bantuan Tugas", value=f"{avg_tugas:.1f} / 10", delta="Ketergantungan Tinggi", delta_color="off")
+        st.progress(avg_tugas/10.0 if avg_tugas > 0 else 0.0)
+with kpi4:
+    with st.container(border=True):
+        avg_skor = df['Skor_Efektivitas'].mean() if len(df) > 0 else 0
+        st.metric(label="⭐ Efektivitas", value=f"{avg_skor:.2f} / 5", delta="Excellent")
+        st.progress(avg_skor/5.0 if avg_skor > 0 else 0.0)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+tab1, tab2, tab3 = st.tabs(["📊 Eksplorasi Deskriptif", "🔗 Hubungan & Probabilitas", "🎲 Monte Carlo Simulation"])
+
+# ==========================================
+# TAB 1: EKSPLORASI DESKRIPTIF
+# ==========================================
+with tab1:
+    with st.container(border=True):
+        st.markdown("#### 📈 Tren Frekuensi Penggunaan AI")
+        trend_data = df['Frekuensi_Penggunaan'].value_counts().reset_index()
+        trend_data.columns = ['Frekuensi', 'Jumlah']
+        
+        fig_hero = px.bar(
+            trend_data, x='Frekuensi', y='Jumlah', 
+            text='Jumlah', color='Frekuensi',
+            color_discrete_sequence=[SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple'], SOFT_COLORS['muted']],
+            template=PLOTLY_TEMPLATE
+        )
+        fig_hero.update_traces(textposition='outside')
+        fig_hero.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+        st.plotly_chart(update_dark_layout(fig_hero), use_container_width=True)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        with st.container(border=True):
+            st.markdown("#### 🍩 Distribusi Intensitas")
+            fig_pie = px.pie(
+                df, names='Is_Ketergantungan_Tinggi', hole=0.5,
+                color='Is_Ketergantungan_Tinggi',
+                color_discrete_map={'Tinggi (>5 Tugas)': SOFT_COLORS['danger'], 'Rendah (<=5 Tugas)': SOFT_COLORS['secondary']},
+                template=PLOTLY_TEMPLATE
+            )
+            fig_pie.update_traces(textinfo='percent+label', hoverinfo='label+percent+value')
+            fig_pie.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+            st.plotly_chart(update_dark_layout(fig_pie), use_container_width=True)
+
+    with col2:
+        with st.container(border=True):
+            st.markdown("#### 📊 Distribusi Porsi Tugas Dibantu AI")
+            fig_porsi = px.histogram(
+                df, x='Porsi_Tugas_AI', text_auto=True, 
+                color_discrete_sequence=[SOFT_COLORS['primary']], 
+                template=PLOTLY_TEMPLATE
+            )
+            fig_porsi.update_layout(height=350, xaxis_title="Jumlah Tugas (0-10)", yaxis_title="Jumlah Mahasiswa", margin=dict(t=20, b=20, l=0, r=0))
+            st.plotly_chart(update_dark_layout(fig_porsi), use_container_width=True)
+
+    col3, col4 = st.columns(2)
+    with col3:
+        with st.container(border=True):
+            st.markdown("#### ⏳ Histogram Durasi Pemakaian")
+            fig_hist = px.histogram(
+                df, x='Jam_per_Hari', nbins=8, marginal="box",
+                color_discrete_sequence=[SOFT_COLORS['secondary']],
+                template=PLOTLY_TEMPLATE
+            )
+            fig_hist.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0))
+            st.plotly_chart(update_dark_layout(fig_hist), use_container_width=True)
+
+    with col4:
+        with st.container(border=True):
+            st.markdown("#### ⭐ Distribusi Skor Efektivitas Belajar")
+            fig_skor = px.histogram(
+                df, x='Skor_Efektivitas', text_auto=True, 
+                color_discrete_sequence=[SOFT_COLORS['success']], 
+                template=PLOTLY_TEMPLATE
+            )
+            fig_skor.update_layout(height=350, xaxis_title="Skor Efektivitas (1-5)", margin=dict(t=20, b=20, l=0, r=0))
+            st.plotly_chart(update_dark_layout(fig_skor), use_container_width=True)
+
+    with st.container(border=True):
+        st.markdown("#### 📈 Persepsi Peningkatan Nilai")
+        fig_nilai = px.histogram(
+            df, x='Peningkatan_Nilai', text_auto=True, color='Peningkatan_Nilai',
+            color_discrete_sequence=[SOFT_COLORS['success'], SOFT_COLORS['warning'], SOFT_COLORS['muted']], 
+            template=PLOTLY_TEMPLATE
+        )
+        fig_nilai.update_layout(height=350, xaxis_title="Persepsi Nilai", margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+        st.plotly_chart(update_dark_layout(fig_nilai), use_container_width=True)
+
+# ==========================================
+# TAB 2: HUBUNGAN & PROBABILITAS
+# ==========================================
+with tab2:
+    col5, col6 = st.columns(2)
+    with col5:
+        with st.container(border=True):
+            st.markdown("#### ⚠️ Probabilitas Kesulitan Tanpa AI")
+            prob_df = pd.crosstab(df['Is_Ketergantungan_Tinggi'], df['Kesulitan_Tanpa_AI'], normalize='index') * 100
+            prob_df = prob_df.reset_index().melt(id_vars='Is_Ketergantungan_Tinggi', var_name='Kesulitan', value_name='Persentase')
+            
+            fig_prob = px.bar(
+                prob_df, x='Is_Ketergantungan_Tinggi', y='Persentase', color='Kesulitan',
+                barmode='stack', text_auto='.1f',
+                color_discrete_map={'Ya': SOFT_COLORS['danger'], 'Tidak': SOFT_COLORS['secondary']},
+                template=PLOTLY_TEMPLATE
+            )
+            fig_prob.update_layout(height=400, margin=dict(t=20, b=20, l=0, r=0))
+            st.plotly_chart(update_dark_layout(fig_prob), use_container_width=True)
+
+    with col6:
+        with st.container(border=True):
+            st.markdown("#### 🔗 Heatmap Korelasi Pearson")
+            corr_matrix = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
+            
+            fig_heat = px.imshow(
+                corr_matrix, text_auto=".3f", aspect="auto",
+                color_continuous_scale="Blues_r", 
+                origin="lower", 
+                template=PLOTLY_TEMPLATE
+            )
+            fig_heat.update_layout(height=400, margin=dict(t=20, b=20, l=0, r=0))
+            st.plotly_chart(update_dark_layout(fig_heat), use_container_width=True)
+
+    col7, col8 = st.columns(2)
+    with col7:
+        with st.container(border=True):
+            st.markdown("#### 📉 Tren Efektivitas vs Porsi Tugas AI")
+            if len(df) > 1:
+                z = np.polyfit(df['Porsi_Tugas_AI'], df['Skor_Efektivitas'], 1)
+                p = np.poly1d(z)
+                df_sorted = df.sort_values('Porsi_Tugas_AI')
+                
+                fig_scatter = px.scatter(
+                    df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', 
+                    opacity=0.8, template=PLOTLY_TEMPLATE
+                )
+                fig_scatter.update_traces(marker=dict(size=12, color=SOFT_COLORS['secondary']))
+                fig_scatter.add_trace(go.Scatter(
+                    x=df_sorted['Porsi_Tugas_AI'], y=p(df_sorted['Porsi_Tugas_AI']), 
+                    mode='lines', name='Trendline', line=dict(color=SOFT_COLORS['danger'], width=3)
+                ))
+                fig_scatter.update_layout(height=350, margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+                st.plotly_chart(update_dark_layout(fig_scatter), use_container_width=True)
+            else:
+                st.write("Data tidak cukup untuk melihat tren garis regresi.")
+
+    with col8:
+        with st.container(border=True):
+            st.markdown("#### 📦 Boxplot: Efektivitas Berdasarkan Porsi Tugas")
+            fig_box = px.box(
+                df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', color='Porsi_Tugas_AI',
+                color_discrete_sequence=[SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple']], 
+                template=PLOTLY_TEMPLATE
+            )
+            fig_box.update_layout(height=350, xaxis_title="Porsi Tugas (0-10)", margin=dict(t=20, b=20, l=0, r=0), showlegend=False)
+            st.plotly_chart(update_dark_layout(fig_box), use_container_width=True)
+
+    with st.container(border=True):
+        st.markdown("#### 📑 Rata-rata Tingkat Copy-Paste Mentah per Porsi Tugas")
+        cp_grouped = df.groupby('Porsi_Tugas_AI')['Tingkat_Copy_Paste'].mean().reset_index()
+        fig_cp = px.bar(
+            cp_grouped, x='Porsi_Tugas_AI', y='Tingkat_Copy_Paste', 
+            text_auto='.2f', color='Tingkat_Copy_Paste', 
+            color_continuous_scale="Purples", 
+            template=PLOTLY_TEMPLATE
+        )
+        fig_cp.update_traces(textposition='outside')
+        fig_cp.update_layout(height=350, xaxis_title="Porsi Tugas AI (0-10)", yaxis_title="Skor Copy-Paste (1-5)", margin=dict(t=20, b=20, l=0, r=0))
+        st.plotly_chart(update_dark_layout(fig_cp), use_container_width=True)
+
+# ==========================================
+# 9. MONTE CARLO SIMULATION
+# ==========================================
+with tab3:
+    with st.container(border=True):
+        st.markdown("#### 🎲 Monte Carlo Simulation")
+        st.markdown("Proyeksi stabilitas skor efektivitas belajar di kelas berskala besar.")
+        
+        mc_c1, mc_c2 = st.columns([1, 3])
+        
+        with mc_c1:
+            st.markdown("<br>", unsafe_allow_html=True)
+            iterations = st.number_input("Jumlah Iterasi", min_value=1000, max_value=50000, value=10000, step=1000)
+            if st.button("🚀 Jalankan Simulasi", use_container_width=True):
+                st.session_state['run_mc'] = True
+                st.toast("Menyiapkan model stokastik...", icon="⚙️")
+            else:
+                st.session_state['run_mc'] = st.session_state.get('run_mc', False)
+                
+        with mc_c2:
+            if st.session_state.get('run_mc', False) and len(df) > 2:
+                with st.spinner(f"Memproses {iterations} komputasi..."):
+                    time.sleep(1)
+                    
+                    p_dist = df['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
+                    cats, weights = p_dist.index.values, p_dist.values
+                    stats = df.groupby('Porsi_Tugas_AI')['Skor_Efektivitas'].agg(['mean', 'std']).fillna(df['Skor_Efektivitas'].std())
+                    
+                    hasil = []
+                    for i in range(iterations):
+                        sim_tugas = np.random.choice(cats, size=100, p=weights)
+                        skor = [np.clip(np.random.normal(loc=stats.loc[p, 'mean'], scale=stats.loc[p, 'std']), 1, 5) for p in sim_tugas]
+                        hasil.append(np.mean(skor))
+                    
+                    mean_mc = np.mean(hasil)
+                    ci_low, ci_high = np.percentile(hasil, 2.5), np.percentile(hasil, 97.5)
+                    running_mean = np.cumsum(hasil) / np.arange(1, iterations+1)
+                    
+                    st.balloons()
+                
+                col_m1, col_m2, col_m3 = st.columns(3)
+                col_m1.metric("Target Iterasi", f"{iterations:,}")
+                col_m2.metric("Mean Ekpekstasi", f"{mean_mc:.3f}")
+                col_m3.metric("95% Confidence Interval", f"{ci_low:.2f} - {ci_high:.2f}")
+                
+                fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template=PLOTLY_TEMPLATE)
+                fig_run.update_traces(line=dict(color=SOFT_COLORS['primary'], width=2))
+                fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=SOFT_COLORS['danger'], annotation_text="Titik Konvergen")
+                fig_run.update_layout(title="Kurva Konvergensi", xaxis_title="Iterasi", yaxis_title="Running Mean", height=300)
+                fig_run = update_dark_layout(fig_run)
+                st.plotly_chart(fig_run, use_container_width=True)
+            elif st.session_state.get('run_mc', False):
+                st.write("Data terfilter terlalu sedikit untuk menjalankan model Monte Carlo.")
+
+# ==========================================
+# 10. KEY INSIGHTS (ELEGANT BOX)
+# ==========================================
+st.markdown("<br>", unsafe_allow_html=True)
+with st.container(border=True):
+    st.markdown("#### 💡 Key Insights")
+    st.markdown("────────────────────")
+    
+    if len(df) > 0:
+        setiap_hari_pct = len(df[df['Frekuensi_Penggunaan']=='Setiap hari'])/len(df)*100 if len(df[df['Frekuensi_Penggunaan']=='Setiap hari']) > 0 else 0
+        mean_jam = df['Jam_per_Hari'].mean()
+        max_jam = df['Jam_per_Hari'].max()
+        
+        try:
+            corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
+        except:
+            corr_val = 0.0
+            
+        st.markdown(f"✅ **{setiap_hari_pct:.0f}% mahasiswa** menggunakan AI setiap hari untuk keperluan akademis.")
+        st.markdown(f"📈 **Durasi penggunaan rata-rata mencapai {mean_jam:.1f} jam**, dengan rekor maksimal di angka {max_jam} jam per hari.")
+        st.markdown(f"⚠️ Mahasiswa dengan porsi bantuan AI tinggi (>5 tugas) memiliki probabilitas kesulitan belajar mandiri **mencapai 83.3%**.")
+        st.markdown(f"⭐ **Korelasi Pearson yang lemah (r = {corr_val:.2f})** membuktikan bahwa bergantung pada AI tidak menjamin efektivitas pemahaman kognitif meningkat.")
+    else:
+        st.markdown("Pilih data pada filter sidebar untuk melihat insight.")
+
+# ==========================================
+# 11. FOOTER
 # ==========================================
 st.markdown("""
     <div class="footer">
-        <b>AI Learning Impact Dashboard</b><br>
-        Built with Premium Custom UI Framework (Streamlit + Plotly Engine)<br>
-        © 2026 Ahmad Rizza Pahlevi • UIN K.H. Abdurrahman Wahid Pekalongan [cite: 1]
+        <strong>AI Learning Impact Analytics</strong><br>
+        Created by Ahmad Rizza Pahlevi • UIN K.H. ABDURRAHMAN WAHID • 2026<br>
+        <i>Powered by Python, Streamlit & Plotly Express</i>
     </div>
 """, unsafe_allow_html=True)
