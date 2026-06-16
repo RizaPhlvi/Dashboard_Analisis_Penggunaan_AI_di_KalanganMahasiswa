@@ -690,11 +690,115 @@ p, h1, h2, h3, h4, h5, h6, label {
     overflow: hidden;
 }
 
+/* === KPI PROGRESS BAR === */
+.kpi-progress {
+    margin-top: 12px;
+    height: 4px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 100%;
+}
+
 .kpi-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    background: linear-gradient(90deg, #3B82F6, #06B6D4);
     border-radius: 2px;
     transition: width 1s ease;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* === KPI CARD CUSTOM === */
+.kpi-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #3B82F6, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.kpi-card:hover::before {
+    opacity: 1;
+}
+
+.kpi-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.kpi-label {
+    color: #94A3B8;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #F8FAFC 0%, #CBD5E1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.kpi-subtitle {
+    color: #CBD5E1;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.kpi-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.kpi-delta.positive {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22C55E;
+}
+
+.kpi-delta.negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: #EF4444;
+}
+
+.kpi-delta.neutral {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94A3B8;
 }
 
 /* === DATA QUALITY PANEL === */
@@ -1611,114 +1715,3 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-/* === KPI PROGRESS BAR === */
-.kpi-progress {
-    margin-top: 12px;
-    height: 4px;
-    background: rgba(30, 41, 59, 0.8);
-    border-radius: 2px;
-    overflow: hidden;
-    width: 100%;
-}
-
-.kpi-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #3B82F6, #06B6D4);
-    border-radius: 2px;
-    transition: width 1s ease;
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
-}
-
-/* === KPI CARD CUSTOM === */
-.kpi-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
-    padding: 24px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-}
-
-.kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #3B82F6, transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.kpi-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-}
-
-.kpi-card:hover::before {
-    opacity: 1;
-}
-
-.kpi-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    display: block;
-}
-
-.kpi-label {
-    color: #94A3B8;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-}
-
-.kpi-value {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #F8FAFC 0%, #CBD5E1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-    line-height: 1.2;
-}
-
-.kpi-subtitle {
-    color: #CBD5E1;
-    font-size: 13px;
-    margin-bottom: 12px;
-}
-
-.kpi-delta {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.kpi-delta.positive {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22C55E;
-}
-
-.kpi-delta.negative {
-    background: rgba(239, 68, 68, 0.15);
-    color: #EF4444;
-}
-
-.kpi-delta.neutral {
-    background: rgba(148, 163, 184, 0.15);
-    color: #94A3B8;
-}
