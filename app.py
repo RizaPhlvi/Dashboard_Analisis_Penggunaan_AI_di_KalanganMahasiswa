@@ -21,17 +21,17 @@ st.markdown("""
     
     /* === EFEK BACKGROUND DARK SLATE & GRID BUKU MATEMATIKA === */
     [data-testid="stAppViewContainer"] { 
-        background-color: #181C25; /* Dark Slate (Abu-abu kehitaman) */
+        background-color: #181C25; 
         background-image: 
             linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-        background-size: 25px 25px; /* Ukuran kotak-kotak grid */
+        background-size: 25px 25px; 
     }
     
     [data-testid="stHeader"] { background-color: rgba(15, 23, 42, 0); }
     
     [data-testid="stSidebar"] { 
-        background-color: #13161C; /* Sidebar sedikit lebih gelap */
+        background-color: #13161C; 
         border-right: 1px solid #2A3143; 
     }
     
@@ -41,10 +41,10 @@ st.markdown("""
     
     /* Container/Card pelindung grafik agar grid tidak menabrak chart */
     [data-testid="stVerticalBlockBorderWrapper"] > div {
-        background-color: #1E2433 !important; /* Slate yang lebih terang dari background */
+        background-color: #1E2433 !important; 
         border-color: #2D3748 !important;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Efek mengambang */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
     }
     
     /* Header Box */
@@ -61,7 +61,22 @@ st.markdown("""
     .header-subtitle { font-size: 18px; opacity: 0.9; margin-top: 0; }
     
     .footer { text-align: center; padding: 20px; color: #64748B; font-size: 14px; margin-top: 50px; border-top: 1px solid #2D3748; }
+    
+    /* === WARNA TEKS UTAMA (PUTIH) === */
     p, h1, h2, h3, h4, h5, h6, label { color: #F8FAFC !important; }
+    
+    /* === KHUSUS WARNA TEKS SIDEBAR (BIRU) === */
+    [data-testid="stSidebar"] p, 
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3, 
+    [data-testid="stSidebar"] h4, 
+    [data-testid="stSidebar"] h5, 
+    [data-testid="stSidebar"] h6, 
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] span {
+        color: #60A5FA !important; /* Blue 400 */
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -103,7 +118,7 @@ df_raw = load_data()
 # 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
-    st.markdown("<h3 style='color: #818CF8;'>AI Learning Impact</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #60A5FA;'>AI Learning Impact</h3>", unsafe_allow_html=True)
     st.markdown("━━━━━━━━━━━━━━━━━━━━━━")
     
     st.markdown("**📁 FILTER DATASET**")
