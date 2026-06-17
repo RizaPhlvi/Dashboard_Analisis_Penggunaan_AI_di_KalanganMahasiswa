@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import time
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN
+# 1. KONFIGURASI HALAMAN & CUSTOM CSS
 # ==========================================
 st.set_page_config(
     page_title="AI Learning Impact Analytics",
@@ -15,947 +15,733 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==========================================
-# 2. LOADING SCREEN (Premium Experience)
-# ==========================================
-if 'loaded' not in st.session_state:
-    st.session_state.loaded = False
-
-if not st.session_state.loaded:
-    loading_container = st.container()
-    with loading_container:
-        st.markdown("""
-        <div style='text-align: center; padding: 100px 0;'>
-            <div style='font-size: 48px; margin-bottom: 20px;'>🎓</div>
-            <div style='font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #3B82F6, #06B6D4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px;'>
-                AI Learning Impact Analytics
-            </div>
-            <div style='color: #94A3B8; font-size: 14px; margin-bottom: 30px;'>Enterprise Analytics Dashboard</div>
-            <div style='max-width: 400px; margin: 0 auto;'>
-                <div style='background: rgba(30, 41, 59, 0.5); border-radius: 10px; padding: 20px; border: 1px solid rgba(59, 130, 246, 0.2);'>
-                    <div style='color: #F8FAFC; font-size: 14px; margin-bottom: 15px;'>Initializing Dashboard...</div>
-                    <div style='background: #1E293B; border-radius: 8px; height: 8px; overflow: hidden;'>
-                        <div style='background: linear-gradient(90deg, #3B82F6, #06B6D4); height: 100%; width: 100%; animation: loading 2s ease-in-out;'></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <style>
-        @keyframes loading {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-    time.sleep(2)
-    st.session_state.loaded = True
-    st.rerun()
-
-# ==========================================
-# 3. CUSTOM CSS (ENTERPRISE THEME LENGKAP)
-# ==========================================
 st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-/* === ROOT VARIABLES === */
-:root {
-    --bg-primary: #0F172A;
-    --bg-surface: #1E293B;
-    --bg-elevated: #273449;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-medium: #475569;
-    --text-primary: #F8FAFC;
-    --text-secondary: #CBD5E1;
-    --text-muted: #94A3B8;
-    --accent-primary: #3B82F6;
-    --accent-secondary: #06B6D4;
-    --accent-success: #22C55E;
-    --accent-warning: #F59E0B;
-    --accent-danger: #EF4444;
-    --accent-purple: #8B5CF6;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
-    --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
-}
-
-/* === GLOBAL TYPOGRAPHY === */
-html, body, [class*="css"] {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text-primary);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    -webkit-font-smoothing: antialiased;
-}
-
-/* === BACKGROUND === */
-[data-testid="stAppViewContainer"] {
-    background: 
-        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(59, 130, 246, 0.08), transparent),
-        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(139, 92, 246, 0.06), transparent),
-        linear-gradient(180deg, #0F172A 0%, #0B1120 100%);
-    background-attachment: fixed;
-}
-
-[data-testid="stHeader"] {
-    background-color: transparent;
-}
-
-/* === SIDEBAR === */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0B1120 0%, #131B2E 100%) !important;
-    border-right: 1px solid var(--border-subtle);
-    position: sticky;
-    top: 0;
-}
-
-[data-testid="stSidebar"] .stMarkdown {
-    color: var(--text-primary);
-}
-
-/* === TABS === */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 4px;
-    background: rgba(30, 41, 59, 0.5);
-    backdrop-filter: blur(12px);
-    border-radius: 14px;
-    padding: 6px;
-    border: 1px solid var(--border-subtle);
-    display: inline-flex;
-}
-
-.stTabs [data-baseweb="tab"] {
-    background: transparent;
-    border-radius: 10px;
-    padding: 10px 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none;
-}
-
-.stTabs [data-baseweb="tab"] p {
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-    transition: all 0.3s ease;
-}
-
-.stTabs [data-baseweb="tab"]:hover {
-    background: rgba(59, 130, 246, 0.08);
-}
-
-.stTabs [data-baseweb="tab"]:hover p {
-    color: var(--text-primary);
-}
-
-.stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.15) 100%);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-}
-
-.stTabs [aria-selected="true"] p {
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 14px;
-}
-
-/* === SLIDER === */
-.stSlider [data-baseweb="slider"] [role="slider"] {
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-}
-
-/* === BUTTON === */
-.stButton > button {
-    background: linear-gradient(135deg, var(--accent-primary) 0%, #2563EB 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #FFFFFF;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 10px 24px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-}
-
-.stButton > button:hover {
-    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-}
-
-/* === MULTISELECT === */
-.stMultiSelect [data-baseweb="tag"] {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.15));
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: 8px;
-}
-
-.stMultiSelect [data-baseweb="tag"] span {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-/* === EXPANDER === */
-[data-testid="stExpander"] {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    margin-bottom: 12px;
-    transition: all 0.3s ease;
-}
-
-[data-testid="stExpander"]:hover {
-    border-color: var(--border-medium);
-    background: rgba(30, 41, 59, 0.6);
-}
-
-[data-testid="stExpander"] summary {
-    padding: 14px 18px;
-}
-
-[data-testid="stExpander"] summary span {
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--text-primary);
-}
-
-/* === METRIC CARDS DEFAULT === */
-div[data-testid="stMetric"] {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 18px;
-    padding: 22px 24px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-div[data-testid="stMetric"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-div[data-testid="stMetric"]:hover {
-    transform: translateY(-4px);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: var(--shadow-glow), var(--shadow-lg);
-}
-
-div[data-testid="stMetric"]:hover::before {
-    opacity: 1;
-}
-
-div[data-testid="stMetricValue"] {
-    color: var(--text-primary);
-    font-weight: 700;
-    font-size: 34px;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #F8FAFC 0%, #CBD5E1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-div[data-testid="stMetricLabel"] {
-    color: var(--text-muted);
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-}
-
-div[data-testid="stMetricDelta"] {
-    font-size: 12px;
-    font-weight: 600;
-}
-
-/* === CARD WRAPPER === */
-[data-testid="stVerticalBlockBorderWrapper"] > div,
-section[data-testid="stVerticalBlock"] > div {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.3) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 20px;
-    box-shadow: var(--shadow-md);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 24px;
-}
-
-[data-testid="stVerticalBlockBorderWrapper"] > div:hover,
-section[data-testid="stVerticalBlock"] > div:hover {
-    border-color: rgba(59, 130, 246, 0.3);
-    box-shadow: var(--shadow-lg), 0 0 30px rgba(59, 130, 246, 0.1);
-    transform: translateY(-2px);
-}
-
-/* === HERO SECTION === */
-.hero-box {
-    background:
-        radial-gradient(ellipse 100% 100% at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse 80% 100% at 100% 100%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-        linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-    backdrop-filter: blur(20px);
-    padding: 48px 40px;
-    border-radius: 24px;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeIn 0.8s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.hero-box::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-    animation: pulse-glow 8s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes pulse-glow {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.05); }
-}
-
-.hero-title {
-    font-size: 42px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-subtitle {
-    font-size: 17px;
-    color: var(--text-secondary);
-    font-weight: 400;
-    margin-top: 0;
-    margin-bottom: 28px;
-    line-height: 1.6;
-    max-width: 720px;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-meta {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
-}
-
-.meta-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.meta-chip:hover {
-    border-color: var(--accent-primary);
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--text-primary);
-}
-
-.meta-chip-icon {
-    font-size: 14px;
-}
-
-/* === EXECUTIVE SUMMARY === */
-.executive-summary {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(6, 182, 212, 0.05) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    border-left: 3px solid var(--accent-primary);
-    border-radius: 16px;
-    padding: 22px 26px;
-    margin: 20px 0;
-    color: var(--text-secondary);
-    font-size: 14.5px;
-    line-height: 1.7;
-    animation: slideIn 0.6s ease-out;
-}
-
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-.executive-summary strong {
-    color: var(--text-primary);
-}
-
-/* === SECTION DIVIDER === */
-.section-divider {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin: 40px 0 24px 0;
-}
-
-.section-divider-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
-}
-
-.section-divider-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--text-muted);
-    padding: 6px 14px;
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* === INSIGHT BOX === */
-.insight-box {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, rgba(6, 182, 212, 0.04) 100%);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    border-left: 3px solid var(--accent-success);
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin-top: 18px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    transition: all 0.3s ease;
-}
-
-.insight-box:hover {
-    border-left-color: var(--accent-primary);
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(6, 182, 212, 0.05) 100%);
-    transform: translateX(4px);
-}
-
-.insight-box strong {
-    color: var(--accent-success);
-    font-weight: 600;
-    margin-right: 6px;
-}
-
-/* === CHART TITLE === */
-.chart-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-}
-
-.chart-description {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
-/* === MONTE CARLO === */
-.mc-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    color: var(--accent-success);
-    font-weight: 600;
-    margin-bottom: 16px;
-}
-
-.mc-status-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--accent-success);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--accent-success);
-    animation: pulse-dot 2s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.2); }
-}
-
-/* === FOOTER === */
-.dashboard-footer {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 18px;
-    padding: 28px 32px;
-    margin-top: 60px;
-    color: var(--text-muted);
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.dashboard-footer strong {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.footer-meta {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-/* === TEXT COLORS === */
-p, h1, h2, h3, h4, h5, h6, label {
-    color: var(--text-primary) !important;
-}
-
-.stMarkdown {
-    color: var(--text-primary);
-}
-
-/* === SCROLLBAR === */
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-medium);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-primary);
-}
-
-/* === NUMBER INPUT === */
-.stNumberInput input {
-    background: rgba(30, 41, 59, 0.4) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 10px !important;
-    color: var(--text-primary) !important;
-}
-
-.stNumberInput input:focus {
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
-}
-
-/* === KPI CARD CUSTOM (FIXED) === */
-.kpi-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 18px;
-    padding: 24px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.kpi-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: var(--shadow-glow), var(--shadow-lg);
-}
-
-.kpi-card:hover::before {
-    opacity: 1;
-}
-
-.kpi-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    display: block;
-    line-height: 1;
-}
-
-.kpi-label {
-    color: var(--text-muted);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-}
-
-.kpi-value {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #F8FAFC 0%, #CBD5E1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-    line-height: 1.2;
-}
-
-.kpi-subtitle {
-    color: var(--text-secondary);
-    font-size: 13px;
-    margin-bottom: 12px;
-}
-
-.kpi-delta {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    width: fit-content;
-}
-
-.kpi-delta.positive {
-    background: rgba(34, 197, 94, 0.15);
-    color: var(--accent-success);
-}
-
-.kpi-delta.negative {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--accent-danger);
-}
-
-.kpi-delta.neutral {
-    background: rgba(148, 163, 184, 0.15);
-    color: var(--text-muted);
-}
-
-.kpi-progress {
-    margin-top: 14px;
-    height: 4px;
-    background: rgba(30, 41, 59, 0.8);
-    border-radius: 2px;
-    overflow: hidden;
-    width: 100%;
-}
-
-.kpi-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #3B82F6, #06B6D4);
-    border-radius: 2px;
-    transition: width 1s ease;
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
-}
-
-/* === DATA QUALITY PANEL === */
-.data-quality-panel {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.3) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    border-radius: 16px;
-    padding: 20px 24px;
-    margin: 20px 0;
-}
-
-.dq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-top: 12px;
-}
-
-.dq-item {
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 14px 16px;
-    transition: all 0.3s ease;
-}
-
-.dq-item:hover {
-    border-color: rgba(59, 130, 246, 0.3);
-    transform: translateY(-2px);
-}
-
-.dq-label {
-    color: var(--text-muted);
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 6px;
-}
-
-.dq-value {
-    color: var(--text-primary);
-    font-size: 18px;
-    font-weight: 600;
-}
-
-/* === AI INSIGHT PANEL === */
-.ai-insight-panel {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.06) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    border-left: 3px solid var(--accent-purple);
-    border-radius: 16px;
-    padding: 22px 26px;
-    margin: 24px 0;
-    color: var(--text-secondary);
-    font-size: 14.5px;
-    line-height: 1.7;
-}
-
-.ai-insight-panel strong {
-    color: var(--accent-purple);
-}
-
-/* === SECTION NUMBER === */
-.section-number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: white;
-    font-size: 14px;
-    font-weight: 700;
-    border-radius: 8px;
-}
-
-/* === HEATMAP INTERPRETATION === */
-.heatmap-interp {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 12px;
-}
-
-.heatmap-interp.strong-pos {
-    background: rgba(34, 197, 94, 0.15);
-    color: var(--accent-success);
-}
-
-.heatmap-interp.weak-neg {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--accent-danger);
-}
-
-.heatmap-interp.neutral {
-    background: rgba(148, 163, 184, 0.15);
-    color: var(--text-muted);
-}
-</style>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    /* ─── GLOBAL RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body, [class*="css"], .stMarkdown, .stText {
+        font-family: 'Inter', sans-serif !important;
+        color: #F8FAFC;
+    }
+
+    /* ─── MAIN BACKGROUND: deep gradient, no grid ─── */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #0F172A 0%, #0D1526 40%, #111827 70%, #0F172A 100%) !important;
+        min-height: 100vh;
+    }
+
+    [data-testid="stHeader"] {
+        background: transparent !important;
+        backdrop-filter: none;
+    }
+
+    [data-testid="stMainBlockContainer"] {
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    /* ─── SIDEBAR ─── */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0D1117 0%, #0F172A 100%) !important;
+        border-right: 1px solid rgba(59, 130, 246, 0.15) !important;
+    }
+
+    [data-testid="stSidebar"] > div {
+        padding-top: 1.5rem;
+    }
+
+    /* ─── SIDEBAR BRAND ─── */
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.08));
+        border: 1px solid rgba(59,130,246,0.25);
+        border-radius: 14px;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-brand-icon {
+        font-size: 28px;
+        line-height: 1;
+    }
+    .sidebar-brand-text {
+        font-size: 13px;
+        font-weight: 700;
+        color: #F8FAFC;
+        line-height: 1.3;
+        letter-spacing: 0.02em;
+    }
+    .sidebar-brand-sub {
+        font-size: 10px;
+        font-weight: 400;
+        color: #64748B;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    /* ─── SIDEBAR SECTION LABELS ─── */
+    .sidebar-section-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #3B82F6;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0 4px;
+        margin-bottom: 0.5rem;
+        margin-top: 1rem;
+        display: block;
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
+        margin: 1rem 0;
+        border: none;
+    }
+
+    /* ─── SIDEBAR INPUTS ─── */
+    [data-testid="stSidebar"] .stMultiSelect label,
+    [data-testid="stSidebar"] .stSlider label {
+        color: #94A3B8 !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+    }
+
+    /* ─── SIDEBAR RISK BOX ─── */
+    .risk-box {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .risk-high {
+        background: rgba(239,68,68,0.12);
+        border: 1px solid rgba(239,68,68,0.3);
+        color: #EF4444;
+    }
+    .risk-low {
+        background: rgba(34,197,94,0.12);
+        border: 1px solid rgba(34,197,94,0.3);
+        color: #22C55E;
+    }
+
+    /* ─── SIDEBAR META ─── */
+    .sidebar-meta {
+        background: rgba(30,41,59,0.6);
+        border: 1px solid rgba(51,65,85,0.5);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 0.5rem;
+    }
+    .sidebar-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: #64748B;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+    .sidebar-meta-row:last-child { margin-bottom: 0; }
+    .sidebar-meta-row span { color: #94A3B8; }
+
+    /* ─── HERO SECTION ─── */
+    .hero-section {
+        background: linear-gradient(135deg,
+            rgba(59,130,246,0.18) 0%,
+            rgba(6,182,212,0.10) 40%,
+            rgba(15,23,42,0.95) 100%);
+        border: 1px solid rgba(59,130,246,0.25);
+        border-radius: 20px;
+        padding: 36px 40px;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 240px; height: 240px;
+        background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -40px; left: 30%;
+        width: 180px; height: 180px;
+        background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .hero-eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #3B82F6;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .hero-eyebrow::after {
+        content: '';
+        flex: 1;
+        max-width: 40px;
+        height: 1px;
+        background: linear-gradient(90deg, #3B82F6, transparent);
+    }
+    .hero-title {
+        font-size: 34px;
+        font-weight: 800;
+        color: #F8FAFC;
+        margin: 0 0 8px 0;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+    .hero-title span {
+        background: linear-gradient(90deg, #3B82F6, #06B6D4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero-subtitle {
+        font-size: 15px;
+        color: #94A3B8;
+        font-weight: 400;
+        margin: 0 0 24px 0;
+        max-width: 560px;
+        line-height: 1.6;
+    }
+    .hero-meta-bar {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .hero-meta-pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 50px;
+        padding: 5px 14px;
+        font-size: 12px;
+        color: #CBD5E1;
+        font-weight: 500;
+        backdrop-filter: blur(4px);
+    }
+    .hero-meta-pill .pill-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: #22C55E;
+        box-shadow: 0 0 6px #22C55E;
+        animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 2rem 0 1.5rem 0;
+    }
+    .section-divider-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #475569;
+        white-space: nowrap;
+    }
+    .section-divider-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(51,65,85,0.8), transparent);
+    }
+    .section-divider-line.left {
+        background: linear-gradient(90deg, transparent, rgba(51,65,85,0.8));
+        flex: 0.15;
+    }
+
+    /* ─── KPI CARDS ─── */
+    .kpi-card {
+        background: linear-gradient(135deg, rgba(30,41,59,0.9), rgba(15,23,42,0.95));
+        border: 1px solid rgba(51,65,85,0.6);
+        border-radius: 18px;
+        padding: 22px 24px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        cursor: default;
+    }
+    .kpi-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    .kpi-card.blue:hover { border-color: rgba(59,130,246,0.5); box-shadow: 0 12px 40px rgba(59,130,246,0.15); }
+    .kpi-card.cyan:hover { border-color: rgba(6,182,212,0.5); box-shadow: 0 12px 40px rgba(6,182,212,0.15); }
+    .kpi-card.amber:hover { border-color: rgba(245,158,11,0.5); box-shadow: 0 12px 40px rgba(245,158,11,0.15); }
+    .kpi-card.green:hover { border-color: rgba(34,197,94,0.5); box-shadow: 0 12px 40px rgba(34,197,94,0.15); }
+
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        border-radius: 18px 18px 0 0;
+    }
+    .kpi-card.blue::before  { background: linear-gradient(90deg, #3B82F6, #06B6D4); }
+    .kpi-card.cyan::before  { background: linear-gradient(90deg, #06B6D4, #3B82F6); }
+    .kpi-card.amber::before { background: linear-gradient(90deg, #F59E0B, #EF4444); }
+    .kpi-card.green::before { background: linear-gradient(90deg, #22C55E, #06B6D4); }
+
+    .kpi-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+    }
+    .kpi-icon-wrap {
+        width: 40px; height: 40px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    .kpi-card.blue  .kpi-icon-wrap { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.2); }
+    .kpi-card.cyan  .kpi-icon-wrap { background: rgba(6,182,212,0.15);  border: 1px solid rgba(6,182,212,0.2); }
+    .kpi-card.amber .kpi-icon-wrap { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.2); }
+    .kpi-card.green .kpi-icon-wrap { background: rgba(34,197,94,0.15);  border: 1px solid rgba(34,197,94,0.2); }
+
+    .kpi-badge {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 50px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    .badge-neutral  { background: rgba(100,116,139,0.2); color: #64748B; border: 1px solid rgba(100,116,139,0.2); }
+    .badge-up       { background: rgba(34,197,94,0.12);  color: #22C55E; border: 1px solid rgba(34,197,94,0.25); }
+    .badge-warn     { background: rgba(245,158,11,0.12); color: #F59E0B; border: 1px solid rgba(245,158,11,0.25); }
+    .badge-down     { background: rgba(239,68,68,0.12);  color: #EF4444; border: 1px solid rgba(239,68,68,0.25); }
+
+    .kpi-value {
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+    }
+    .kpi-card.blue  .kpi-value { color: #60A5FA; }
+    .kpi-card.cyan  .kpi-value { color: #22D3EE; }
+    .kpi-card.amber .kpi-value { color: #FCD34D; }
+    .kpi-card.green .kpi-value { color: #4ADE80; }
+
+    .kpi-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: #64748B;
+        letter-spacing: 0.01em;
+    }
+    .kpi-bar-track {
+        height: 4px;
+        background: rgba(51,65,85,0.6);
+        border-radius: 99px;
+        margin-top: 14px;
+        overflow: hidden;
+    }
+    .kpi-bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.8s ease;
+    }
+    .kpi-card.blue  .kpi-bar-fill { background: linear-gradient(90deg, #3B82F6, #06B6D4); }
+    .kpi-card.cyan  .kpi-bar-fill { background: linear-gradient(90deg, #06B6D4, #22D3EE); }
+    .kpi-card.amber .kpi-bar-fill { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+    .kpi-card.green .kpi-bar-fill { background: linear-gradient(90deg, #22C55E, #4ADE80); }
+
+    /* ─── EXECUTIVE SUMMARY ─── */
+    .exec-summary {
+        background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9));
+        border: 1px solid rgba(59,130,246,0.15);
+        border-radius: 18px;
+        padding: 24px 28px;
+        margin: 1.5rem 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        backdrop-filter: blur(8px);
+    }
+    .exec-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #3B82F6;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .exec-title::before {
+        content: '';
+        width: 20px; height: 2px;
+        background: #3B82F6;
+        border-radius: 99px;
+    }
+    .exec-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    @media (max-width: 768px) { .exec-grid { grid-template-columns: 1fr; } }
+    .exec-item {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(51,65,85,0.4);
+        border-radius: 12px;
+        padding: 14px 16px;
+        transition: background 0.2s, border-color 0.2s;
+    }
+    .exec-item:hover {
+        background: rgba(59,130,246,0.06);
+        border-color: rgba(59,130,246,0.2);
+    }
+    .exec-item-icon { font-size: 16px; margin-bottom: 6px; }
+    .exec-item-text {
+        font-size: 13px;
+        color: #CBD5E1;
+        line-height: 1.5;
+        font-weight: 400;
+    }
+    .exec-item-text strong { color: #F8FAFC; font-weight: 600; }
+
+    /* ─── CHART CARD ─── */
+    .chart-card {
+        background: linear-gradient(135deg, rgba(30,41,59,0.85), rgba(15,23,42,0.9));
+        border: 1px solid rgba(51,65,85,0.5);
+        border-radius: 18px;
+        padding: 22px 22px 14px 22px;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+        backdrop-filter: blur(8px);
+        margin-bottom: 0;
+    }
+    .chart-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(59,130,246,0.25);
+        box-shadow: 0 10px 36px rgba(0,0,0,0.32), 0 0 0 1px rgba(59,130,246,0.08);
+    }
+    .chart-card-header {
+        margin-bottom: 4px;
+    }
+    .chart-card-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #F8FAFC;
+        margin: 0 0 3px 0;
+        letter-spacing: -0.01em;
+    }
+    .chart-card-desc {
+        font-size: 12px;
+        color: #64748B;
+        margin: 0 0 12px 0;
+        font-weight: 400;
+    }
+
+    /* ─── INSIGHT BOX ─── */
+    .insight-box {
+        background: rgba(59,130,246,0.07);
+        border: 1px solid rgba(59,130,246,0.18);
+        border-radius: 10px;
+        padding: 11px 15px;
+        margin-top: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 12px;
+        color: #94A3B8;
+        line-height: 1.5;
+        transition: background 0.2s;
+    }
+    .insight-box:hover {
+        background: rgba(59,130,246,0.10);
+    }
+    .insight-box-icon {
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+    .insight-box strong { color: #93C5FD; }
+
+    /* ─── TAB NAV ─── */
+    .stTabs [data-baseweb="tab-list"] {
+        background: rgba(15,23,42,0.6) !important;
+        border: 1px solid rgba(51,65,85,0.5) !important;
+        border-radius: 14px !important;
+        padding: 5px !important;
+        gap: 4px !important;
+        backdrop-filter: blur(8px);
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 10px !important;
+        transition: all 0.2s ease !important;
+        padding: 8px 20px !important;
+        border: none !important;
+    }
+    .stTabs [data-baseweb="tab"] p {
+        color: #64748B !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        background: rgba(59,130,246,0.18) !important;
+        border: 1px solid rgba(59,130,246,0.3) !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p {
+        color: #93C5FD !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+    }
+    .stTabs [data-baseweb="tab-highlight"] { display: none !important; }
+    .stTabs [data-baseweb="tab-border"] { display: none !important; }
+
+    /* ─── SLIDER ─── */
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background-color: #3B82F6 !important;
+        border-color: #3B82F6 !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+    }
+
+    /* ─── BUTTON ─── */
+    .stButton > button {
+        background: linear-gradient(135deg, #3B82F6, #2563EB) !important;
+        border: none !important;
+        color: #FFFFFF !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        letter-spacing: 0.01em !important;
+        padding: 10px 20px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(59,130,246,0.3) !important;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #2563EB, #1D4ED8) !important;
+        box-shadow: 0 6px 18px rgba(59,130,246,0.45) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* ─── MULTISELECT ─── */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: rgba(59,130,246,0.2) !important;
+        border: 1px solid rgba(59,130,246,0.35) !important;
+        border-radius: 6px !important;
+    }
+    .stMultiSelect [data-baseweb="tag"] span { color: #93C5FD !important; }
+
+    /* ─── NUMBER INPUT ─── */
+    .stNumberInput input {
+        background: rgba(30,41,59,0.8) !important;
+        border: 1px solid rgba(51,65,85,0.7) !important;
+        border-radius: 8px !important;
+        color: #F8FAFC !important;
+    }
+    .stNumberInput input:focus {
+        border-color: rgba(59,130,246,0.5) !important;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
+    }
+
+    /* ─── METRICS ─── */
+    div[data-testid="stMetricValue"] { color: #60A5FA !important; font-weight: 800 !important; font-size: 28px !important; }
+    div[data-testid="stMetricLabel"] { color: #64748B !important; font-size: 12px !important; font-weight: 500 !important; }
+    div[data-testid="stMetricDelta"] { font-size: 12px !important; }
+
+    /* ─── EXPANDER ─── */
+    .stExpander details {
+        background: rgba(30,41,59,0.5) !important;
+        border: 1px solid rgba(51,65,85,0.5) !important;
+        border-radius: 12px !important;
+        padding: 2px !important;
+    }
+    .stExpander details summary {
+        color: #94A3B8 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 10px 14px !important;
+    }
+
+    /* ─── SELECTBOX / DROPDOWN ─── */
+    .stSelectbox > div > div {
+        background: rgba(30,41,59,0.8) !important;
+        border-color: rgba(51,65,85,0.7) !important;
+        border-radius: 8px !important;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(51,65,85,0.7); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.5); }
+
+    /* ─── REMOVE STREAMLIT ARTIFACTS ─── */
+    #MainMenu, footer, header { visibility: hidden; }
+    [data-testid="stVerticalBlockBorderWrapper"] > div {
+        background-color: transparent !important;
+        border-color: transparent !important;
+        border-radius: 0px !important;
+        box-shadow: none !important;
+    }
+
+    /* ─── TEXT OVERRIDE ─── */
+    p, h1, h2, h3, h4, h5, h6 { color: #F8FAFC !important; }
+    label { color: #94A3B8 !important; }
+
+    /* ─── MONTE CARLO CARD ─── */
+    .mc-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 14px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+    .mc-status-idle {
+        background: rgba(100,116,139,0.15);
+        border: 1px solid rgba(100,116,139,0.3);
+        color: #64748B;
+    }
+    .mc-status-running {
+        background: rgba(245,158,11,0.12);
+        border: 1px solid rgba(245,158,11,0.3);
+        color: #F59E0B;
+    }
+    .mc-status-done {
+        background: rgba(34,197,94,0.12);
+        border: 1px solid rgba(34,197,94,0.3);
+        color: #22C55E;
+    }
+    .mc-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: blink 1.2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .mc-metric-card {
+        background: rgba(30,41,59,0.8);
+        border: 1px solid rgba(51,65,85,0.5);
+        border-radius: 14px;
+        padding: 18px 20px;
+        text-align: center;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+    .mc-metric-card:hover {
+        border-color: rgba(59,130,246,0.3);
+        transform: translateY(-2px);
+    }
+    .mc-metric-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #60A5FA;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-bottom: 5px;
+    }
+    .mc-metric-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    /* ─── FOOTER ─── */
+    .dashboard-footer {
+        margin-top: 3rem;
+        padding: 24px 32px;
+        background: linear-gradient(135deg, rgba(30,41,59,0.6), rgba(15,23,42,0.8));
+        border: 1px solid rgba(51,65,85,0.4);
+        border-radius: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        backdrop-filter: blur(8px);
+    }
+    .footer-brand {
+        font-size: 13px;
+        font-weight: 700;
+        color: #F8FAFC;
+    }
+    .footer-brand span {
+        background: linear-gradient(90deg, #3B82F6, #06B6D4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .footer-meta { font-size: 11px; color: #475569; line-height: 1.6; }
+    .footer-tech {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .tech-badge {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 50px;
+        padding: 4px 11px;
+        font-size: 11px;
+        color: #64748B;
+        font-weight: 500;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# 4. DESIGN TOKENS
-# ==========================================
+# ─── COLOR PALETTE ───────────────────────────────────────────────────────────
 SOFT_COLORS = {
-    'primary': '#3B82F6',
+    'primary':   '#3B82F6',
     'secondary': '#06B6D4',
-    'success': '#22C55E',
-    'danger': '#EF4444',
-    'warning': '#F59E0B',
-    'purple': '#8B5CF6',
-    'muted': '#94A3B8'
+    'success':   '#22C55E',
+    'danger':    '#EF4444',
+    'warning':   '#F59E0B',
+    'purple':    '#A78BFA',
+    'muted':     '#64748B',
 }
 
 PLOTLY_TEMPLATE = 'plotly_dark'
 
-# ==========================================
-# 5. HELPER FUNCTIONS
-# ==========================================
-def render_section_divider(title, number=None):
-    number_html = f'<span class="section-number">{number}</span>' if number else ''
-    st.markdown(f"""
-    <div class="section-divider">
-        <div class="section-divider-line"></div>
-        <div class="section-divider-title">{number_html}{title}</div>
-        <div class="section-divider-line"></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-def render_chart_header(title, description):
-    st.markdown(f'<div class="chart-title">{title}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="chart-description">{description}</div>', unsafe_allow_html=True)
-
-def render_insight_box(text):
-    st.markdown(f"""
-    <div class="insight-box">
-        <strong>💡 Insight</strong>{text}
-    </div>
-    """, unsafe_allow_html=True)
-
-def update_dark_layout(fig):
-    fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#E2E8F0', family='Inter', size=12),
-        margin=dict(t=20, b=20, l=0, r=0)
-    )
-    return fig
-
-def render_kpi_card(icon, label, value, subtitle, delta_text, delta_type, progress=None):
-    """Render custom KPI card with progress bar - FIXED VERSION"""
-    
-    # Validasi delta_type
-    if delta_type not in ['positive', 'negative', 'neutral']:
-        delta_type = 'neutral'
-    
-    # Icon untuk delta
-    if delta_type == 'positive':
-        delta_icon = "▲"
-    elif delta_type == 'negative':
-        delta_icon = "▼"
-    else:
-        delta_icon = "●"
-    
-    # Validasi dan format progress
-    progress_html = ""
-    if progress is not None:
-        try:
-            progress_val = float(progress)
-            # Clamp antara 0-100 untuk menghindari error
-            progress_val = max(0.0, min(100.0, progress_val))
-            progress_html = f'<div class="kpi-progress"><div class="kpi-progress-bar" style="width: {progress_val:.1f}%;"></div></div>'
-        except (TypeError, ValueError):
-            progress_html = ""  # Skip progress bar jika error
-    
-    # Render card dengan HTML yang clean
-    html_content = f"""
-    <div class="kpi-card">
-        <span class="kpi-icon">{icon}</span>
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value">{value}</div>
-        <div class="kpi-subtitle">{subtitle}</div>
-        <span class="kpi-delta {delta_type}">
-            {delta_icon} {delta_text}
-        </span>
-        {progress_html}
-    </div>
-    """
-    
-    st.markdown(html_content, unsafe_allow_html=True)
-
-def render_data_quality_panel(df):
-    """Render Data Quality Overview Panel"""
-    missing_count = df.isnull().sum().sum()
-    total_cells = df.shape[0] * df.shape[1]
-    missing_pct = (missing_count / total_cells * 100) if total_cells > 0 else 0
-    
-    date_min = str(df['Date_Parsed'].min()) if 'Date_Parsed' in df.columns else 'N/A'
-    date_max = str(df['Date_Parsed'].max()) if 'Date_Parsed' in df.columns else 'N/A'
-    
-    prodi_count = df['Prodi'].nunique() if 'Prodi' in df.columns else 0
-    semester_count = df['Semester'].nunique() if 'Semester' in df.columns else 0
-    
-    st.markdown(f"""
-    <div class="data-quality-panel">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-            <div style="font-size: 24px;">📊</div>
-            <div>
-                <div style="font-size: 16px; font-weight: 600; color: #F8FAFC;">Data Quality Overview</div>
-                <div style="font-size: 12px; color: #94A3B8;">Ringkasan kualitas dataset</div>
-            </div>
-        </div>
-        <div class="dq-grid">
-            <div class="dq-item">
-                <div class="dq-label">Total Records</div>
-                <div class="dq-value">{len(df):,}</div>
-            </div>
-            <div class="dq-item">
-                <div class="dq-label">Missing Values</div>
-                <div class="dq-value">{missing_count} ({missing_pct:.2f}%)</div>
-            </div>
-            <div class="dq-item">
-                <div class="dq-label">Program Studi</div>
-                <div class="dq-value">{prodi_count}</div>
-            </div>
-            <div class="dq-item">
-                <div class="dq-label">Semester</div>
-                <div class="dq-value">{semester_count}</div>
-            </div>
-            <div class="dq-item">
-                <div class="dq-label">Variables</div>
-                <div class="dq-value">{len(df.columns)}</div>
-            </div>
-            <div class="dq-item">
-                <div class="dq-label">Date Range</div>
-                <div class="dq-value" style="font-size: 14px;">{date_min[:10]} → {date_max[:10]}</div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+CHART_PAPER_BG = 'rgba(0,0,0,0)'
+CHART_PLOT_BG  = 'rgba(0,0,0,0)'
 
 # ==========================================
-# 6. MEMUAT & PRE-PROCESSING DATA (TIDAK BERUBAH)
+# 2. MEMUAT & PRE-PROCESSING DATA
 # ==========================================
 @st.cache_data
 def load_data():
@@ -966,7 +752,9 @@ def load_data():
         'Porsi_Tugas_AI', 'Frekuensi_Info_Salah', 'Peningkatan_Nilai',
         'Tingkat_Copy_Paste', 'Skor_Efektivitas'
     ]
-    df['Is_Ketergantungan_Tinggi'] = np.where(df['Porsi_Tugas_AI'] > 5, 'Tinggi (>5 Tugas)', 'Rendah (<=5 Tugas)')
+    df['Is_Ketergantungan_Tinggi'] = np.where(
+        df['Porsi_Tugas_AI'] > 5, 'Tinggi (>5 Tugas)', 'Rendah (<=5 Tugas)'
+    )
     try:
         df['Date_Parsed'] = pd.to_datetime(df['Timestamp'], errors='coerce').dt.date
     except:
@@ -976,672 +764,857 @@ def load_data():
 df_raw = load_data()
 
 # ==========================================
-# 7. SIDEBAR (REDESIGNED)
+# 3. SIDEBAR: FILTER & NAVIGASI
 # ==========================================
 with st.sidebar:
     st.markdown("""
-    <div style="padding: 8px 0 20px 0;">
-        <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em; 
-                    background: linear-gradient(135deg, #3B82F6, #06B6D4); 
-                    -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            🎓 AI Learning Impact
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">🎓</div>
+            <div>
+                <div class="sidebar-brand-text">AI Learning Impact</div>
+                <div class="sidebar-brand-sub">Analytics Dashboard</div>
+            </div>
         </div>
-        <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">
-            Enterprise Analytics Dashboard
-        </div>
-    </div>
     """, unsafe_allow_html=True)
-    
-    with st.expander("📁 Filter Dataset", expanded=True):
-        prodi_list = df_raw['Prodi'].unique().tolist()
-        filter_prodi = st.multiselect("Program Studi", options=prodi_list, default=prodi_list)
-        
-        semester_list = sorted(df_raw['Semester'].unique().tolist())
-        filter_semester = st.multiselect("Semester", options=semester_list, default=semester_list)
-    
-    with st.expander("🔮 Profil Simulator"):
-        sim_tugas = st.slider("Porsi Bantuan AI Anda:", 0, 10, 6)
-        if sim_tugas > 5:
-            st.error("⚠️ Risiko Ketergantungan Tinggi")
-        else:
-            st.success("✅ Ketergantungan Aman")
-    
-    with st.expander("ℹ️ Tentang Dashboard"):
-        st.markdown("""
-        <div style="font-size: 13px; color: #CBD5E1; line-height: 1.6;">
-            Dashboard ini menganalisis dampak penggunaan <strong>Artificial Intelligence</strong> 
-            terhadap efektivitas belajar mahasiswa dengan pendekatan <em>data-driven analytics</em>.
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("<div style='margin-top: 40px; padding-top: 20px; border-top: 1px solid #334155;'>", unsafe_allow_html=True)
-    st.caption("👨‍💻 **Developer:** Ahmad Rizza Pahlevi")
-    st.caption("🏢 UIN K.H. Abdurrahman Wahid")
-    st.caption("📅 Juni 2026")
 
-# Apply filter
+    st.markdown('<span class="sidebar-section-label">📁 Filter Dataset</span>', unsafe_allow_html=True)
+
+    with st.expander("Program Studi & Semester", expanded=True):
+        prodi_list = df_raw['Prodi'].unique().tolist()
+        filter_prodi = st.multiselect(
+            "Program Studi", options=prodi_list, default=prodi_list,
+            label_visibility="collapsed",
+            placeholder="Pilih Program Studi..."
+        )
+        semester_list = sorted(df_raw['Semester'].unique().tolist())
+        filter_semester = st.multiselect(
+            "Semester", options=semester_list, default=semester_list,
+            label_visibility="collapsed",
+            placeholder="Pilih Semester..."
+        )
+
+    st.markdown('<hr class="sidebar-divider">', unsafe_allow_html=True)
+    st.markdown('<span class="sidebar-section-label">🔮 Profil Simulator</span>', unsafe_allow_html=True)
+
+    with st.expander("Pengaturan Simulasi Pribadi", expanded=True):
+        sim_tugas = st.slider("Porsi Bantuan AI (dari 10 tugas):", 0, 10, 6)
+        if sim_tugas > 5:
+            st.markdown(
+                '<div class="risk-box risk-high">⚠️ Risiko Ketergantungan Tinggi</div>',
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown(
+                '<div class="risk-box risk-low">✅ Penggunaan Dalam Batas Aman</div>',
+                unsafe_allow_html=True
+            )
+
+    st.markdown('<hr class="sidebar-divider">', unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="sidebar-meta">
+            <div class="sidebar-meta-row">👨‍💻 <span>Ahmad Rizza Pahlevi</span></div>
+            <div class="sidebar-meta-row">🏛️ <span>UIN K.H. Abdurrahman Wahid</span></div>
+            <div class="sidebar-meta-row">📅 <span>Update: Juni 2026</span></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+
+# ─── APPLY FILTER ────────────────────────────────────────────────────────────
 if filter_prodi and filter_semester:
     df = df_raw[(df_raw['Prodi'].isin(filter_prodi)) & (df_raw['Semester'].isin(filter_semester))]
 else:
     df = df_raw
 
+# ─── HELPER ──────────────────────────────────────────────────────────────────
+def update_dark_layout(fig, height=350):
+    fig.update_layout(
+        paper_bgcolor=CHART_PAPER_BG,
+        plot_bgcolor=CHART_PLOT_BG,
+        font=dict(family='Inter, sans-serif', color='#CBD5E1', size=12),
+        height=height,
+        margin=dict(t=10, b=10, l=0, r=0),
+        legend=dict(
+            bgcolor='rgba(15,23,42,0.8)',
+            bordercolor='rgba(51,65,85,0.5)',
+            borderwidth=1,
+            font=dict(color='#94A3B8', size=11)
+        ),
+    )
+    fig.update_xaxes(
+        gridcolor='rgba(51,65,85,0.3)',
+        zerolinecolor='rgba(51,65,85,0.4)',
+        tickfont=dict(color='#64748B', size=11),
+        title_font=dict(color='#94A3B8', size=12)
+    )
+    fig.update_yaxes(
+        gridcolor='rgba(51,65,85,0.3)',
+        zerolinecolor='rgba(51,65,85,0.4)',
+        tickfont=dict(color='#64748B', size=11),
+        title_font=dict(color='#94A3B8', size=12)
+    )
+    return fig
+
+def chart_card(title, desc):
+    st.markdown(f"""
+        <div class="chart-card-header">
+            <p class="chart-card-title">{title}</p>
+            <p class="chart-card-desc">{desc}</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+def insight_box(text):
+    st.markdown(f"""
+        <div class="insight-box">
+            <span class="insight-box-icon">💡</span>
+            <span>{text}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+def section_divider(label):
+    st.markdown(f"""
+        <div class="section-divider">
+            <div class="section-divider-line left"></div>
+            <span class="section-divider-label">{label}</span>
+            <div class="section-divider-line"></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+
 # ==========================================
-# 8. HERO SECTION
+# 4. HERO SECTION
 # ==========================================
+n_responden = len(df)
+setiap_hari_pct = len(df[df['Frekuensi_Penggunaan'] == 'Setiap hari']) / max(len(df), 1) * 100
+
 st.markdown(f"""
-<div class="hero-box">
-    <div class="hero-title">AI Learning Impact Analytics</div>
-    <div class="hero-subtitle">
-        Memahami pola, dampak, dan probabilitas penggunaan <strong>Artificial Intelligence</strong> 
-        dalam ekosistem akademik melalui pendekatan analitik berbasis data, probabilitas, 
-        dan simulasi Monte Carlo untuk proyeksi skala besar.
+    <div class="hero-section">
+        <div class="hero-eyebrow">Research Analytics Dashboard</div>
+        <h1 class="hero-title">AI Learning Impact <span>Analytics</span></h1>
+        <p class="hero-subtitle">
+            Monitoring komprehensif perilaku penggunaan Artificial Intelligence
+            pada ekosistem akademik mahasiswa perguruan tinggi.
+        </p>
+        <div class="hero-meta-bar">
+            <div class="hero-meta-pill">
+                <span class="pill-dot"></span>
+                Live · {n_responden} Responden Aktif
+            </div>
+            <div class="hero-meta-pill">📅 Update: Juni 2026</div>
+            <div class="hero-meta-pill">👨‍💻 Ahmad Rizza Pahlevi</div>
+            <div class="hero-meta-pill">🏛️ UIN K.H. Abdurrahman Wahid</div>
+        </div>
     </div>
-    <div class="hero-meta">
-        <div class="meta-chip"><span class="meta-chip-icon">📅</span> Update: Juni 2026</div>
-        <div class="meta-chip"><span class="meta-chip-icon">👨‍💻</span> Ahmad Rizza Pahlevi</div>
-        <div class="meta-chip"><span class="meta-chip-icon">🏢</span> UIN K.H. Abdurrahman Wahid</div>
-        <div class="meta-chip"><span class="meta-chip-icon">📊</span> {len(df)} Responden Aktif</div>
-    </div>
-</div>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 9. KPI PREMIUM CARDS (FIXED VERSION)
+# 5. KPI CARDS
 # ==========================================
-col1, col2, col3, col4 = st.columns(4)
+section_divider("Key Performance Indicators")
 
-avg_jam = df['Jam_per_Hari'].mean() if len(df) > 0 else 0
+avg_jam   = df['Jam_per_Hari'].mean() if len(df) > 0 else 0
 avg_tugas = df['Porsi_Tugas_AI'].mean() if len(df) > 0 else 0
-avg_skor = df['Skor_Efektivitas'].mean() if len(df) > 0 else 0
+avg_skor  = df['Skor_Efektivitas'].mean() if len(df) > 0 else 0
 
-with col1:
-    render_kpi_card(
-        icon="👥",
-        label="Total Respondent",
-        value=f"{len(df)}",
-        subtitle="Data Terfilter",
-        delta_text="Active Dataset",
-        delta_type="neutral",
-        progress=None
-    )
+bar_jam   = min(avg_jam / 10.0, 1.0) * 100
+bar_tugas = avg_tugas / 10.0 * 100
+bar_skor  = avg_skor / 5.0 * 100
 
-with col2:
-    # Progress bar untuk durasi (max 10 jam = 100%)
-    progress_jam = min(avg_jam / 10 * 100, 100) if len(df) > 0 else 0
-    render_kpi_card(
-        icon="⏱️",
-        label="Durasi Rata-rata",
-        value=f"{avg_jam:.1f} Jam",
-        subtitle="Per Hari",
-        delta_text="-0.2 vs Nasional",
-        delta_type="negative",
-        progress=progress_jam
-    )
+k1, k2, k3, k4 = st.columns(4)
 
-with col3:
-    # Progress bar untuk ketergantungan (max 10 = 100%)
-    progress_tugas = avg_tugas * 10 if len(df) > 0 else 0
-    render_kpi_card(
-        icon="📝",
-        label="Bantuan Tugas",
-        value=f"{avg_tugas:.1f}/10",
-        subtitle="Ketergantungan AI",
-        delta_text="Moderate",
-        delta_type="neutral",
-        progress=progress_tugas
-    )
-
-with col4:
-    # Progress bar untuk skor efektivitas (max 5 = 100%)
-    progress_skor = (avg_skor / 5 * 100) if len(df) > 0 else 0
-    delta_type_skor = "positive" if avg_skor > 3.5 else "neutral"
-    delta_text_skor = "Excellent" if avg_skor > 3.5 else "Moderate"
-    
-    render_kpi_card(
-        icon="⭐",
-        label="Skor Efektivitas",
-        value=f"{avg_skor:.2f}/5",
-        subtitle="Learning Impact",
-        delta_text=delta_text_skor,
-        delta_type=delta_type_skor,
-        progress=progress_skor
-    )
-
-# ==========================================
-# 10. DATA QUALITY PANEL
-# ==========================================
-if len(df) > 0:
-    render_data_quality_panel(df)
-
-# ==========================================
-# 11. EXECUTIVE SUMMARY
-# ==========================================
-render_section_divider("Executive Summary", "01")
-
-if len(df) > 0:
-    setiap_hari_pct = len(df[df['Frekuensi_Penggunaan']=='Setiap hari'])/len(df)*100
-    mean_jam = df['Jam_per_Hari'].mean()
-    max_jam = df['Jam_per_Hari'].max()
-    high_dep_pct = len(df[df['Is_Ketergantungan_Tinggi']=='Tinggi (>5 Tugas)'])/len(df)*100
-    
+with k1:
     st.markdown(f"""
-    <div class="executive-summary">
-        Dataset saat ini merepresentasikan <strong>{len(df)} mahasiswa</strong> yang aktif menggunakan AI untuk keperluan akademik. 
-        <strong>{setiap_hari_pct:.0f}%</strong> di antaranya menggunakan AI setiap hari dengan durasi rata-rata 
-        <strong>{mean_jam:.1f} jam/hari</strong> (maksimal {max_jam} jam). 
-        Proporsi mahasiswa dengan ketergantungan tinggi (>5 tugas) mencapai <strong>{high_dep_pct:.0f}%</strong>, 
-        mengindikasikan perlunya intervensi edukatif untuk menjaga kemandirian kognitif.
-        <br><br>
-        <strong>Rekomendasi:</strong> Perlu pengembangan panduan penggunaan AI yang seimbang untuk memaksimalkan 
-        manfaat pembelajaran tanpa mengurangi kemampuan analitis mandiri mahasiswa.
-    </div>
+        <div class="kpi-card blue">
+            <div class="kpi-header">
+                <div class="kpi-icon-wrap">👥</div>
+                <span class="kpi-badge badge-neutral">Dataset</span>
+            </div>
+            <div class="kpi-value">{n_responden}</div>
+            <div class="kpi-label">Total Mahasiswa Terfilter</div>
+            <div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:100%"></div></div>
+        </div>
     """, unsafe_allow_html=True)
-else:
-    st.info("Tidak ada data yang sesuai dengan filter yang dipilih.")
+
+with k2:
+    delta_cls = "badge-warn" if avg_jam >= 3 else "badge-up"
+    st.markdown(f"""
+        <div class="kpi-card cyan">
+            <div class="kpi-header">
+                <div class="kpi-icon-wrap">⏱️</div>
+                <span class="kpi-badge {delta_cls}">{'⬆ Tinggi' if avg_jam >= 3 else '✓ Normal'}</span>
+            </div>
+            <div class="kpi-value">{avg_jam:.1f} Jam</div>
+            <div class="kpi-label">Durasi Penggunaan AI / Hari</div>
+            <div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:{bar_jam:.0f}%"></div></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+with k3:
+    dep_cls = "badge-down" if avg_tugas > 5 else "badge-up"
+    dep_lbl = "⚠ Ketergantungan" if avg_tugas > 5 else "✓ Aman"
+    st.markdown(f"""
+        <div class="kpi-card amber">
+            <div class="kpi-header">
+                <div class="kpi-icon-wrap">📝</div>
+                <span class="kpi-badge {dep_cls}">{dep_lbl}</span>
+            </div>
+            <div class="kpi-value">{avg_tugas:.1f}/10</div>
+            <div class="kpi-label">Rata-rata Porsi Tugas Dibantu AI</div>
+            <div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:{bar_tugas:.0f}%"></div></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+with k4:
+    eff_cls = "badge-up" if avg_skor >= 3.5 else "badge-warn"
+    eff_lbl = "⭐ Efektif" if avg_skor >= 3.5 else "⚠ Perlu Perhatian"
+    st.markdown(f"""
+        <div class="kpi-card green">
+            <div class="kpi-header">
+                <div class="kpi-icon-wrap">⭐</div>
+                <span class="kpi-badge {eff_cls}">{eff_lbl}</span>
+            </div>
+            <div class="kpi-value">{avg_skor:.2f}/5</div>
+            <div class="kpi-label">Skor Efektivitas Belajar</div>
+            <div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:{bar_skor:.0f}%"></div></div>
+        </div>
+    """, unsafe_allow_html=True)
 
 # ==========================================
-# 12. TAB NAVIGATION
+# 6. EXECUTIVE SUMMARY
 # ==========================================
-render_section_divider("Modul Analitik", "02")
+st.markdown("<br>", unsafe_allow_html=True)
+
+ketergantungan_pct = len(df[df['Is_Ketergantungan_Tinggi'] == 'Tinggi (>5 Tugas)']) / max(len(df), 1) * 100
+
+st.markdown(f"""
+    <div class="exec-summary">
+        <div class="exec-title">Executive Summary</div>
+        <div class="exec-grid">
+            <div class="exec-item">
+                <div class="exec-item-icon">🤖</div>
+                <div class="exec-item-text">
+                    <strong>{setiap_hari_pct:.0f}% mahasiswa</strong> menggunakan AI setiap hari,
+                    menunjukkan integrasi teknologi yang sangat dalam pada proses belajar.
+                </div>
+            </div>
+            <div class="exec-item">
+                <div class="exec-item-icon">⚠️</div>
+                <div class="exec-item-text">
+                    <strong>{ketergantungan_pct:.0f}% responden</strong> memiliki tingkat ketergantungan tinggi (>5 tugas dibantu AI),
+                    berisiko pada kemandirian kognitif.
+                </div>
+            </div>
+            <div class="exec-item">
+                <div class="exec-item-icon">📊</div>
+                <div class="exec-item-text">
+                    Skor efektivitas rata-rata <strong>{avg_skor:.2f}/5</strong> mengindikasikan manfaat yang masih belum optimal
+                    dari penggunaan AI dalam pembelajaran.
+                </div>
+            </div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# ==========================================
+# 7. TABS NAVIGASI
+# ==========================================
+section_divider("Analisis Data")
 
 tab1, tab2, tab3 = st.tabs([
-    "📊 02 • Descriptive Analytics", 
-    "🔗 03 • Correlation Analysis", 
-    "🎲 04 • Monte Carlo Simulation"
+    "📊  Eksplorasi Deskriptif",
+    "🔗  Hubungan & Probabilitas",
+    "🎲  Monte Carlo Simulation"
 ])
 
 # ==========================================
 # TAB 1: EKSPLORASI DESKRIPTIF
 # ==========================================
 with tab1:
-    with st.container(border=True):
-        render_chart_header(
+
+    # ── CHART 1: Tren Frekuensi ──────────────────────────────────────────────
+    with st.container():
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
             "📈 Tren Frekuensi Penggunaan AI",
-            "Distribusi seberapa sering mahasiswa menggunakan AI dalam aktivitas akademik harian."
+            "Distribusi intensitas penggunaan AI per kategori frekuensi"
         )
         trend_data = df['Frekuensi_Penggunaan'].value_counts().reset_index()
         trend_data.columns = ['Frekuensi', 'Jumlah']
+
         fig_hero = px.bar(
             trend_data, x='Frekuensi', y='Jumlah',
             text='Jumlah', color='Frekuensi',
-            color_discrete_sequence=[SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple'], SOFT_COLORS['muted']],
+            color_discrete_sequence=[
+                SOFT_COLORS['primary'], SOFT_COLORS['secondary'],
+                SOFT_COLORS['purple'], SOFT_COLORS['muted']
+            ],
             template=PLOTLY_TEMPLATE
         )
-        fig_hero.update_traces(
-            textposition='outside',
-            hovertemplate='<b>%{x}</b><br>Jumlah: %{y}<extra></extra>'
-        )
-        fig_hero.update_layout(height=380, showlegend=False)
-        st.plotly_chart(update_dark_layout(fig_hero), use_container_width=True)
-        
-        top_freq = trend_data.iloc[0] if len(trend_data) > 0 else None
-        if top_freq is not None:
-            render_insight_box(
-                f"Mayoritas mahasiswa ({top_freq['Jumlah']} orang) menggunakan AI dengan frekuensi <strong>{top_freq['Frekuensi']}</strong>, "
-                f"menunjukkan pola adopsi yang cukup tinggi di kalangan responden."
-            )
+        fig_hero.update_traces(textposition='outside', marker_line_width=0)
+        st.plotly_chart(update_dark_layout(fig_hero, 340), use_container_width=True)
 
+        top_freq = trend_data.iloc[0]['Frekuensi'] if len(trend_data) > 0 else '-'
+        top_n    = trend_data.iloc[0]['Jumlah']    if len(trend_data) > 0 else 0
+        insight_box(
+            f"Kategori frekuensi terbanyak adalah <strong>{top_freq}</strong> dengan "
+            f"<strong>{top_n} mahasiswa</strong>. Pola ini menunjukkan adopsi AI yang tinggi "
+            f"dalam rutinitas akademik harian."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
+
+    # ── CHART 2: Donut ───────────────────────────────────────────────────────
     with col1:
-        with st.container(border=True):
-            render_chart_header(
-                "🍩 Distribusi Tingkat Ketergantungan",
-                "Perbandingan proporsi mahasiswa dengan ketergantungan tinggi vs rendah."
-            )
-            fig_pie = px.pie(
-                df, names='Is_Ketergantungan_Tinggi', hole=0.55,
-                color='Is_Ketergantungan_Tinggi',
-                color_discrete_map={'Tinggi (>5 Tugas)': SOFT_COLORS['danger'], 'Rendah (<=5 Tugas)': SOFT_COLORS['secondary']},
-                template=PLOTLY_TEMPLATE
-            )
-            fig_pie.update_traces(
-                textinfo='percent+label', 
-                hoverinfo='label+percent+value',
-                hovertemplate='<b>%{label}</b><br>Proporsi: %{percent}<br>Jumlah: %{value}<extra></extra>'
-            )
-            fig_pie.update_layout(height=380, showlegend=False)
-            st.plotly_chart(update_dark_layout(fig_pie), use_container_width=True)
-            
-            high_count = len(df[df['Is_Ketergantungan_Tinggi']=='Tinggi (>5 Tugas)'])
-            high_pct = (high_count/len(df)*100) if len(df) > 0 else 0
-            render_insight_box(
-                f"Sebanyak <strong>{high_pct:.1f}%</strong> responden memiliki ketergantungan tinggi (>5 tugas dibantu AI), "
-                f"yang memerlukan perhatian khusus dari sisi pedagogis."
-            )
-
-    with col2:
-        with st.container(border=True):
-            render_chart_header(
-                "📊 Distribusi Porsi Tugas Dibantu AI",
-                "Histogram jumlah tugas per mahasiswa yang dibantu oleh AI."
-            )
-            fig_porsi = px.histogram(
-                df, x='Porsi_Tugas_AI', text_auto=True,
-                color_discrete_sequence=[SOFT_COLORS['primary']],
-                template=PLOTLY_TEMPLATE
-            )
-            fig_porsi.update_traces(
-                hovertemplate='<b>Porsi Tugas:</b> %{x}<br><b>Jumlah Mahasiswa:</b> %{y}<extra></extra>'
-            )
-            fig_porsi.update_layout(height=380, xaxis_title="Jumlah Tugas (0-10)", yaxis_title="Jumlah Mahasiswa")
-            st.plotly_chart(update_dark_layout(fig_porsi), use_container_width=True)
-            render_insight_box(
-                f"Distribusi menunjukkan variasi penggunaan AI dari ringan hingga intensif. "
-                f"Rata-rata mahasiswa menggunakan AI untuk <strong>{avg_tugas:.1f} tugas</strong>."
-            )
-
-    col3, col4 = st.columns(2)
-    with col3:
-        with st.container(border=True):
-            render_chart_header(
-                "⏳ Histogram Durasi Pemakaian Harian",
-                "Distribusi durasi penggunaan AI per hari dengan boxplot marginal."
-            )
-            fig_hist = px.histogram(
-                df, x='Jam_per_Hari', nbins=8, marginal="box",
-                color_discrete_sequence=[SOFT_COLORS['secondary']],
-                template=PLOTLY_TEMPLATE
-            )
-            fig_hist.update_traces(
-                hovertemplate='<b>Durasi:</b> %{x} jam<br><b>Frekuensi:</b> %{y}<extra></extra>'
-            )
-            fig_hist.update_layout(height=380)
-            st.plotly_chart(update_dark_layout(fig_hist), use_container_width=True)
-            render_insight_box(
-                f"Durasi rata-rata penggunaan AI adalah <strong>{mean_jam:.1f} jam/hari</strong>, "
-                f"dengan outlier di atas menunjukkan mahasiswa yang sangat intensif menggunakan AI."
-            )
-
-    with col4:
-        with st.container(border=True):
-            render_chart_header(
-                "⭐ Distribusi Skor Efektivitas Belajar",
-                "Seberapa efektif AI membantu proses belajar menurut persepsi mahasiswa."
-            )
-            fig_skor = px.histogram(
-                df, x='Skor_Efektivitas', text_auto=True,
-                color_discrete_sequence=[SOFT_COLORS['success']],
-                template=PLOTLY_TEMPLATE
-            )
-            fig_skor.update_traces(
-                hovertemplate='<b>Skor:</b> %{x}/5<br><b>Jumlah:</b> %{y}<extra></extra>'
-            )
-            fig_skor.update_layout(height=380, xaxis_title="Skor Efektivitas (1-5)")
-            st.plotly_chart(update_dark_layout(fig_skor), use_container_width=True)
-            render_insight_box(
-                f"Skor efektivitas rata-rata <strong>{avg_skor:.2f}/5</strong>, "
-                f"menunjukkan persepsi positif terhadap peran AI dalam pembelajaran."
-            )
-
-    with st.container(border=True):
-        render_chart_header(
-            "📈 Persepsi Peningkatan Nilai Akademik",
-            "Distribusi persepsi mahasiswa tentang peningkatan nilai setelah menggunakan AI."
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "🍩 Distribusi Intensitas Ketergantungan",
+            "Proporsi mahasiswa berdasarkan tingkat ketergantungan AI"
         )
-        fig_nilai = px.histogram(
-            df, x='Peningkatan_Nilai', text_auto=True, color='Peningkatan_Nilai',
-            color_discrete_sequence=[SOFT_COLORS['success'], SOFT_COLORS['warning'], SOFT_COLORS['muted']],
+        fig_pie = px.pie(
+            df, names='Is_Ketergantungan_Tinggi', hole=0.55,
+            color='Is_Ketergantungan_Tinggi',
+            color_discrete_map={
+                'Tinggi (>5 Tugas)': SOFT_COLORS['danger'],
+                'Rendah (<=5 Tugas)': SOFT_COLORS['secondary']
+            },
             template=PLOTLY_TEMPLATE
         )
-        fig_nilai.update_traces(
-            hovertemplate='<b>Persepsi:</b> %{x}<br><b>Jumlah:</b> %{y}<extra></extra>'
+        fig_pie.update_traces(textinfo='percent+label', hoverinfo='label+percent+value')
+        fig_pie.update_layout(showlegend=False)
+        st.plotly_chart(update_dark_layout(fig_pie, 340), use_container_width=True)
+        insight_box(
+            f"<strong>{ketergantungan_pct:.0f}% mahasiswa</strong> menunjukkan pola ketergantungan "
+            f"tinggi terhadap AI. Perlu intervensi literasi digital yang lebih baik."
         )
-        fig_nilai.update_layout(height=380, xaxis_title="Persepsi Nilai", showlegend=False)
-        st.plotly_chart(update_dark_layout(fig_nilai), use_container_width=True)
-        render_insight_box(
-            "Sebagian besar mahasiswa merasa AI berkontribusi pada peningkatan nilai akademik mereka, "
-            "meskipun persepsi ini perlu divalidasi dengan data nilai riil."
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── CHART 3: Histogram Porsi ─────────────────────────────────────────────
+    with col2:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "📊 Distribusi Porsi Tugas Dibantu AI",
+            "Sebaran jumlah tugas yang diselesaikan dengan bantuan AI"
         )
+        fig_porsi = px.histogram(
+            df, x='Porsi_Tugas_AI', text_auto=True,
+            color_discrete_sequence=[SOFT_COLORS['primary']],
+            template=PLOTLY_TEMPLATE
+        )
+        fig_porsi.update_traces(marker_line_width=0)
+        fig_porsi.update_layout(xaxis_title="Jumlah Tugas (0–10)", yaxis_title="Mahasiswa", showlegend=False)
+        st.plotly_chart(update_dark_layout(fig_porsi, 340), use_container_width=True)
+        insight_box(
+            f"Rata-rata porsi tugas dibantu AI adalah <strong>{avg_tugas:.1f}/10</strong>. "
+            f"Distribusi cenderung condong ke nilai tinggi, mengindikasikan ketergantungan substansial."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col3, col4 = st.columns(2)
+
+    # ── CHART 4: Durasi ──────────────────────────────────────────────────────
+    with col3:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "⏳ Histogram Durasi Pemakaian Harian",
+            "Sebaran waktu penggunaan AI per hari (jam)"
+        )
+        fig_hist = px.histogram(
+            df, x='Jam_per_Hari', nbins=8, marginal="box",
+            color_discrete_sequence=[SOFT_COLORS['secondary']],
+            template=PLOTLY_TEMPLATE
+        )
+        fig_hist.update_traces(marker_line_width=0)
+        st.plotly_chart(update_dark_layout(fig_hist, 340), use_container_width=True)
+        max_jam = df['Jam_per_Hari'].max() if len(df) > 0 else 0
+        insight_box(
+            f"Durasi rata-rata <strong>{avg_jam:.1f} jam/hari</strong>, dengan maksimum mencapai "
+            f"<strong>{max_jam} jam/hari</strong>. Mahasiswa dengan durasi >4 jam perlu pemantauan khusus."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── CHART 5: Skor Efektivitas ────────────────────────────────────────────
+    with col4:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "⭐ Distribusi Skor Efektivitas Belajar",
+            "Persepsi mahasiswa terhadap efektivitas belajar menggunakan AI"
+        )
+        fig_skor = px.histogram(
+            df, x='Skor_Efektivitas', text_auto=True,
+            color_discrete_sequence=[SOFT_COLORS['success']],
+            template=PLOTLY_TEMPLATE
+        )
+        fig_skor.update_traces(marker_line_width=0)
+        fig_skor.update_layout(xaxis_title="Skor Efektivitas (1–5)", showlegend=False)
+        st.plotly_chart(update_dark_layout(fig_skor, 340), use_container_width=True)
+        insight_box(
+            f"Skor efektivitas rata-rata <strong>{avg_skor:.2f}/5</strong>. "
+            f"Nilai ini menunjukkan persepsi yang {'positif' if avg_skor >= 3.5 else 'moderat'} "
+            f"terhadap manfaat AI, namun belum mencapai potensi maksimal."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    # ── CHART 6: Peningkatan Nilai ───────────────────────────────────────────
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    chart_card(
+        "📈 Persepsi Peningkatan Nilai Akademik",
+        "Distribusi persepsi mahasiswa terhadap dampak AI pada nilai mereka"
+    )
+    fig_nilai = px.histogram(
+        df, x='Peningkatan_Nilai', text_auto=True,
+        color='Peningkatan_Nilai',
+        color_discrete_sequence=[
+            SOFT_COLORS['success'], SOFT_COLORS['warning'], SOFT_COLORS['muted']
+        ],
+        template=PLOTLY_TEMPLATE
+    )
+    fig_nilai.update_layout(showlegend=False)
+    st.plotly_chart(update_dark_layout(fig_nilai, 320), use_container_width=True)
+    insight_box(
+        "Persepsi peningkatan nilai bervariasi. Mahasiswa dengan intensitas penggunaan AI terstruktur "
+        "cenderung melaporkan peningkatan nilai yang lebih konsisten dibandingkan pengguna sporadis."
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
 # ==========================================
 # TAB 2: HUBUNGAN & PROBABILITAS
 # ==========================================
 with tab2:
+
     col5, col6 = st.columns(2)
+
+    # ── CHART 7: Probabilitas ────────────────────────────────────────────────
     with col5:
-        with st.container(border=True):
-            render_chart_header(
-                "⚠️ Probabilitas Kesulitan Tanpa AI",
-                "Analisis kondisional: seberapa besar mahasiswa merasa kesulitan jika tidak menggunakan AI."
-            )
-            prob_df = pd.crosstab(df['Is_Ketergantungan_Tinggi'], df['Kesulitan_Tanpa_AI'], normalize='index') * 100
-            prob_df = prob_df.reset_index().melt(id_vars='Is_Ketergantungan_Tinggi', var_name='Kesulitan', value_name='Persentase')
-            fig_prob = px.bar(
-                prob_df, x='Is_Ketergantungan_Tinggi', y='Persentase', color='Kesulitan',
-                barmode='stack', text_auto='.1f',
-                color_discrete_map={'Ya': SOFT_COLORS['danger'], 'Tidak': SOFT_COLORS['secondary']},
-                template=PLOTLY_TEMPLATE
-            )
-            fig_prob.update_traces(
-                hovertemplate='<b>%{x}</b><br>Kesulitan: %{fullData.name}<br>Persentase: %{y:.1f}%<extra></extra>'
-            )
-            fig_prob.update_layout(height=400)
-            st.plotly_chart(update_dark_layout(fig_prob), use_container_width=True)
-            render_insight_box(
-                "Mahasiswa dengan ketergantungan tinggi memiliki probabilitas kesulitan belajar mandiri "
-                "yang secara signifikan lebih besar, mengindikasikan <strong>risiko kognitif</strong> jangka panjang."
-            )
-
-    with col6:
-        with st.container(border=True):
-            render_chart_header(
-                "🔗 Heatmap Korelasi Pearson (Diverging)",
-                "Matriks korelasi dengan skema warna diverging untuk membedakan hubungan positif/negatif."
-            )
-            corr_matrix = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
-            fig_heat = px.imshow(
-                corr_matrix, text_auto=".3f", aspect="auto",
-                color_continuous_scale="RdBu",
-                origin="lower",
-                zmin=-1, zmax=1,
-                template=PLOTLY_TEMPLATE
-            )
-            fig_heat.update_traces(
-                hovertemplate='<b>%{x}</b> vs <b>%{y}</b><br>Korelasi: %{z:.3f}<extra></extra>'
-            )
-            fig_heat.update_layout(height=400)
-            st.plotly_chart(update_dark_layout(fig_heat), use_container_width=True)
-            
-            try:
-                corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
-            except:
-                corr_val = 0.0
-            
-            if corr_val > 0.5:
-                interp_class = "strong-pos"
-                interp_text = "Kuat Positif"
-            elif corr_val < -0.5:
-                interp_class = "weak-neg"
-                interp_text = "Kuat Negatif"
-            else:
-                interp_class = "neutral"
-                interp_text = "Lemah"
-            
-            st.markdown(f"""
-            <div class="heatmap-interp {interp_class}">
-                <span>Korelasi: {corr_val:.2f}</span>
-                <span>•</span>
-                <span>{interp_text}</span>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            render_insight_box(
-                f"Korelasi antara Porsi Tugas AI dan Skor Efektivitas adalah <strong>r = {corr_val:.2f}</strong> "
-                f"(lemah), menunjukkan bahwa <strong>kuantitas penggunaan AI tidak otomatis menjamin</strong> "
-                f"peningkatan efektivitas belajar."
-            )
-
-    col7, col8 = st.columns(2)
-    with col7:
-        with st.container(border=True):
-            render_chart_header(
-                "📉 Tren Efektivitas vs Porsi Tugas AI",
-                "Scatter plot dengan trendline linear untuk melihat hubungan dua variabel."
-            )
-            z = np.polyfit(df['Porsi_Tugas_AI'], df['Skor_Efektivitas'], 1)
-            p = np.poly1d(z)
-            df_sorted = df.sort_values('Porsi_Tugas_AI')
-            
-            fig_scatter = px.scatter(
-                df, x='Porsi_Tugas_AI', y='Skor_Efektivitas',
-                opacity=0.8, template=PLOTLY_TEMPLATE,
-                hover_data={'Porsi_Tugas_AI': ':.0f', 'Skor_Efektivitas': ':.2f'}
-            )
-            fig_scatter.update_traces(
-                marker=dict(size=12, color=SOFT_COLORS['secondary']),
-                hovertemplate='<b>Porsi Tugas:</b> %{x}<br><b>Skor Efektivitas:</b> %{y:.2f}<extra></extra>'
-            )
-            fig_scatter.add_trace(go.Scatter(
-                x=df_sorted['Porsi_Tugas_AI'], y=p(df_sorted['Porsi_Tugas_AI']),
-                mode='lines', name='Trendline', line=dict(color=SOFT_COLORS['danger'], width=3)
-            ))
-            
-            r_squared = np.corrcoef(df['Porsi_Tugas_AI'], df['Skor_Efektivitas'])[0, 1] ** 2
-            equation = f"y = {z[0]:.3f}x + {z[1]:.3f}"
-            
-            fig_scatter.update_layout(
-                height=380, 
-                showlegend=False,
-                annotations=[
-                    dict(
-                        x=0.02, y=0.98, xref='paper', yref='paper',
-                        text=f"{equation}<br>R² = {r_squared:.3f}",
-                        showarrow=False,
-                        font=dict(size=12, color='#E2E8F0'),
-                        bgcolor='rgba(30, 41, 59, 0.8)',
-                        bordercolor='rgba(59, 130, 246, 0.3)',
-                        borderwidth=1,
-                        borderpad=8
-                    )
-                ]
-            )
-            st.plotly_chart(update_dark_layout(fig_scatter), use_container_width=True)
-            render_insight_box(
-                "Trendline menunjukkan hubungan yang relatif datar/lemah, "
-                "memperkuat hipotesis bahwa efektivitas lebih bergantung pada <strong>cara penggunaan</strong> "
-                "daripada <strong>seberapa sering</strong> AI digunakan."
-            )
-
-    with col8:
-        with st.container(border=True):
-            render_chart_header(
-                "📦 Boxplot: Efektivitas Berdasarkan Porsi Tugas",
-                "Distribusi skor efektivitas untuk setiap tingkat porsi bantuan AI."
-            )
-            fig_box = px.box(
-                df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', color='Porsi_Tugas_AI',
-                color_discrete_sequence=[SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple']],
-                template=PLOTLY_TEMPLATE
-            )
-            fig_box.update_traces(
-                hovertemplate='<b>Porsi Tugas:</b> %{x}<br><b>Skor:</b> %{y:.2f}<extra></extra>'
-            )
-            fig_box.update_layout(height=380, xaxis_title="Porsi Tugas (0-10)", showlegend=False)
-            st.plotly_chart(update_dark_layout(fig_box), use_container_width=True)
-            render_insight_box(
-                "Boxplot memperlihatkan variasi yang cukup besar dalam setiap kategori, "
-                "menunjukkan bahwa <strong>faktor individu</strong> sangat berpengaruh pada efektivitas penggunaan AI."
-            )
-
-    with st.container(border=True):
-        render_chart_header(
-            "📑 Rata-rata Tingkat Copy-Paste per Porsi Tugas",
-            "Mengukur tingkat ketergantungan pasif (copy-paste) terhadap output AI."
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "⚠️ Probabilitas Kesulitan Belajar Mandiri",
+            "Persentase kesulitan belajar tanpa AI berdasarkan tingkat ketergantungan"
         )
-        cp_grouped = df.groupby('Porsi_Tugas_AI')['Tingkat_Copy_Paste'].mean().reset_index()
-        fig_cp = px.bar(
-            cp_grouped, x='Porsi_Tugas_AI', y='Tingkat_Copy_Paste',
-            text_auto='.2f', color='Tingkat_Copy_Paste',
-            color_continuous_scale="Purples",
+        prob_df = pd.crosstab(
+            df['Is_Ketergantungan_Tinggi'], df['Kesulitan_Tanpa_AI'], normalize='index'
+        ) * 100
+        prob_df = prob_df.reset_index().melt(
+            id_vars='Is_Ketergantungan_Tinggi', var_name='Kesulitan', value_name='Persentase'
+        )
+        fig_prob = px.bar(
+            prob_df, x='Is_Ketergantungan_Tinggi', y='Persentase', color='Kesulitan',
+            barmode='stack', text_auto='.1f',
+            color_discrete_map={
+                'Ya': SOFT_COLORS['danger'],
+                'Tidak': SOFT_COLORS['secondary']
+            },
             template=PLOTLY_TEMPLATE
         )
-        fig_cp.update_traces(
-            textposition='outside',
-            hovertemplate='<b>Porsi Tugas:</b> %{x}<br><b>Skor Copy-Paste:</b> %{y:.2f}<extra></extra>'
+        fig_prob.update_traces(marker_line_width=0)
+        st.plotly_chart(update_dark_layout(fig_prob, 380), use_container_width=True)
+        insight_box(
+            "Mahasiswa dengan <strong>ketergantungan tinggi (>5 tugas)</strong> memiliki probabilitas "
+            "kesulitan belajar mandiri yang jauh lebih besar. Ini mengindikasikan risiko akademik "
+            "jangka panjang yang signifikan."
         )
-        fig_cp.update_layout(height=380, xaxis_title="Porsi Tugas AI (0-10)", yaxis_title="Skor Copy-Paste (1-5)")
-        st.plotly_chart(update_dark_layout(fig_cp), use_container_width=True)
-        render_insight_box(
-            "Tren menunjukkan korelasi positif antara porsi tugas AI dan tingkat copy-paste, "
-            "menandakan adanya <strong>risiko plagiarisme dan penurunan daya analitis</strong> pada pengguna berat AI."
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── CHART 8: Heatmap Korelasi ────────────────────────────────────────────
+    with col6:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "🔗 Heatmap Korelasi Pearson",
+            "Matriks korelasi antar variabel numerik utama (diverging scale)"
         )
+        corr_matrix = df[[
+            'Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas'
+        ]].corr()
+        fig_heat = px.imshow(
+            corr_matrix, text_auto=".3f", aspect="auto",
+            color_continuous_scale="RdBu_r",
+            zmin=-1, zmax=1,
+            origin="lower",
+            template=PLOTLY_TEMPLATE
+        )
+        fig_heat.update_coloraxes(
+            colorbar=dict(
+                tickfont=dict(color='#64748B', size=10),
+                title=dict(text='r', font=dict(color='#64748B'))
+            )
+        )
+        st.plotly_chart(update_dark_layout(fig_heat, 380), use_container_width=True)
+        try:
+            corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
+            corr_txt = f"Korelasi Porsi Tugas ↔ Efektivitas: <strong>r = {corr_val:.3f}</strong> (lemah)"
+        except:
+            corr_txt = "Skema diverging memudahkan identifikasi korelasi positif (biru) dan negatif (merah)."
+        insight_box(corr_txt + " — Warna merah menandakan korelasi negatif, biru korelasi positif.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col7, col8 = st.columns(2)
+
+    # ── CHART 9: Scatter + Trendline ─────────────────────────────────────────
+    with col7:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "📉 Tren Efektivitas vs Porsi Tugas AI",
+            "Scatter plot dengan regresi linear — semakin banyak bantuan AI, seberapa efektif?"
+        )
+        z = np.polyfit(df['Porsi_Tugas_AI'], df['Skor_Efektivitas'], 1)
+        p = np.poly1d(z)
+        df_sorted = df.sort_values('Porsi_Tugas_AI')
+        fig_scatter = px.scatter(
+            df, x='Porsi_Tugas_AI', y='Skor_Efektivitas',
+            opacity=0.75, template=PLOTLY_TEMPLATE
+        )
+        fig_scatter.update_traces(marker=dict(size=10, color=SOFT_COLORS['secondary']))
+        fig_scatter.add_trace(go.Scatter(
+            x=df_sorted['Porsi_Tugas_AI'], y=p(df_sorted['Porsi_Tugas_AI']),
+            mode='lines', name='Trendline',
+            line=dict(color=SOFT_COLORS['danger'], width=2.5, dash='dot')
+        ))
+        fig_scatter.update_layout(showlegend=False)
+        st.plotly_chart(update_dark_layout(fig_scatter, 340), use_container_width=True)
+        slope_dir = "negatif" if z[0] < 0 else "positif"
+        insight_box(
+            f"Trendline menunjukkan kemiringan <strong>{slope_dir}</strong> "
+            f"(slope ≈ {z[0]:.3f}), mengindikasikan bahwa peningkatan porsi bantuan AI "
+            f"{'tidak mendorong' if z[0] < 0 else 'sedikit mendorong'} efektivitas belajar."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── CHART 10: Boxplot ────────────────────────────────────────────────────
+    with col8:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        chart_card(
+            "📦 Boxplot Efektivitas per Porsi Tugas",
+            "Sebaran & outlier skor efektivitas di setiap level porsi tugas AI"
+        )
+        fig_box = px.box(
+            df, x='Porsi_Tugas_AI', y='Skor_Efektivitas', color='Porsi_Tugas_AI',
+            color_discrete_sequence=[
+                SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple']
+            ],
+            template=PLOTLY_TEMPLATE
+        )
+        fig_box.update_layout(
+            xaxis_title="Porsi Tugas (0–10)", showlegend=False
+        )
+        st.plotly_chart(update_dark_layout(fig_box, 340), use_container_width=True)
+        insight_box(
+            "Variasi (IQR) yang lebar pada level tugas tinggi mengindikasikan hasil yang tidak konsisten "
+            "— sebagian mahasiswa tetap efektif, namun sebagian lainnya mengalami penurunan pemahaman."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── CHART 11: Copy-Paste Bar ─────────────────────────────────────────────
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    chart_card(
+        "📑 Rata-rata Tingkat Copy-Paste per Porsi Tugas",
+        "Korelasi antara ketergantungan AI dan perilaku copy-paste tanpa pemrosesan mandiri"
+    )
+    cp_grouped = df.groupby('Porsi_Tugas_AI')['Tingkat_Copy_Paste'].mean().reset_index()
+    fig_cp = px.bar(
+        cp_grouped, x='Porsi_Tugas_AI', y='Tingkat_Copy_Paste',
+        text_auto='.2f', color='Tingkat_Copy_Paste',
+        color_continuous_scale=[
+            [0, '#06B6D4'], [0.5, '#8B5CF6'], [1, '#EF4444']
+        ],
+        template=PLOTLY_TEMPLATE
+    )
+    fig_cp.update_traces(textposition='outside', marker_line_width=0)
+    fig_cp.update_layout(
+        xaxis_title="Porsi Tugas AI (0–10)",
+        yaxis_title="Skor Copy-Paste (1–5)"
+    )
+    st.plotly_chart(update_dark_layout(fig_cp, 320), use_container_width=True)
+    insight_box(
+        "Terlihat tren positif antara porsi tugas AI dan tingkat copy-paste, "
+        "mengonfirmasi bahwa penggunaan AI yang berlebihan mendorong perilaku "
+        "<strong>surface learning</strong> daripada pemahaman mendalam."
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
 # ==========================================
-# TAB 3: MONTE CARLO SIMULATION
+# 8. MONTE CARLO SIMULATION
 # ==========================================
 with tab3:
-    with st.container(border=True):
-        render_chart_header(
-            "🎲 Monte Carlo Simulation",
-            "Proyeksi stokastik untuk memprediksi stabilitas skor efektivitas belajar pada kelas berskala besar "
-            "melalui ribuan iterasi acak berbasis distribusi empiris data."
+
+    # ── Header Monte Carlo ────────────────────────────────────────────────────
+    mc_header_col, mc_status_col = st.columns([3, 1])
+    with mc_header_col:
+        section_divider("Stochastic Simulation Engine")
+    with mc_status_col:
+        mc_current_state = st.session_state.get('run_mc', False)
+        status_class = "mc-status-done" if mc_current_state else "mc-status-idle"
+        status_text  = "Completed" if mc_current_state else "Idle"
+        status_dot   = '<span class="mc-dot"></span>' if not mc_current_state else '●'
+        st.markdown(f"""
+            <div style="margin-top:1.8rem; text-align:right;">
+                <span class="mc-status-pill {status_class}">{status_dot} {status_text}</span>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    chart_card(
+        "🎲 Monte Carlo Simulation",
+        "Proyeksi stokastik stabilitas skor efektivitas belajar pada kelas berskala besar (n=100)"
+    )
+
+    mc_c1, mc_c2 = st.columns([1, 3])
+
+    with mc_c1:
+        st.markdown("<br>", unsafe_allow_html=True)
+        iterations = st.number_input(
+            "Jumlah Iterasi", min_value=1000, max_value=50000, value=10000, step=1000
         )
-        
-        st.markdown('<div class="mc-status"><span class="mc-status-dot"></span> Stochastic Engine Ready</div>', unsafe_allow_html=True)
-        
-        mc_c1, mc_c2 = st.columns([1, 3])
-        with mc_c1:
-            iterations = st.number_input("Jumlah Iterasi", min_value=1000, max_value=50000, value=10000, step=1000)
-            if st.button("🚀 Jalankan Simulasi", use_container_width=True):
-                st.session_state['run_mc'] = True
-                st.toast("Menyiapkan model stokastik...", icon="⚙️")
-            else:
-                st.session_state['run_mc'] = st.session_state.get('run_mc', False)
-        
-        with mc_c2:
-            if st.session_state.get('run_mc', False):
-                with st.spinner(f"Memproses {iterations} komputasi Monte Carlo..."):
-                    time.sleep(1)
-                    p_dist = df['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
-                    cats, weights = p_dist.index.values, p_dist.values
-                    stats = df.groupby('Porsi_Tugas_AI')['Skor_Efektivitas'].agg(['mean', 'std']).fillna(df['Skor_Efektivitas'].std())
-                    hasil = []
-                    for i in range(iterations):
-                        sim_tugas = np.random.choice(cats, size=100, p=weights)
-                        skor = [np.clip(np.random.normal(loc=stats.loc[p, 'mean'], scale=stats.loc[p, 'std']), 1, 5) for p in sim_tugas]
-                        hasil.append(np.mean(skor))
-                    mean_mc = np.mean(hasil)
-                    ci_low, ci_high = np.percentile(hasil, 2.5), np.percentile(hasil, 97.5)
-                    running_mean = np.cumsum(hasil) / np.arange(1, iterations+1)
-                    st.balloons()
-                
-                col_m1, col_m2, col_m3 = st.columns(3)
-                with col_m1:
-                    st.metric("Target Iterasi", f"{iterations:,}")
-                with col_m2:
-                    st.metric("Mean Ekspektasi", f"{mean_mc:.3f}")
-                with col_m3:
-                    st.metric("95% Confidence Interval", f"{ci_low:.2f} - {ci_high:.2f}")
-                
-                fig_run = px.line(x=np.arange(1, iterations+1), y=running_mean, template=PLOTLY_TEMPLATE)
-                fig_run.update_traces(
-                    line=dict(color=SOFT_COLORS['primary'], width=2.5),
-                    hovertemplate='<b>Iterasi:</b> %{x}<br><b>Running Mean:</b> %{y:.3f}<extra></extra>'
-                )
-                fig_run.add_hline(y=mean_mc, line_dash="dash", line_color=SOFT_COLORS['danger'], 
-                                 annotation_text="Titik Konvergen", annotation_font_color=SOFT_COLORS['danger'])
-                fig_run.update_layout(title="Kurva Konvergensi Stokastik", 
-                                     xaxis_title="Iterasi", 
-                                     yaxis_title="Running Mean",
-                                     height=380)
-                fig_run = update_dark_layout(fig_run)
-                st.plotly_chart(fig_run, use_container_width=True)
-                
-                fig_dist = px.histogram(
-                    x=hasil, nbins=50,
-                    color_discrete_sequence=[SOFT_COLORS['purple']],
-                    template=PLOTLY_TEMPLATE
-                )
-                fig_dist.update_traces(
-                    hovertemplate='<b>Skor:</b> %{x:.3f}<br><b>Frekuensi:</b> %{y}<extra></extra>'
-                )
-                fig_dist.update_layout(
-                    title="Distribusi Hasil Simulasi",
-                    xaxis_title="Skor Efektivitas",
-                    yaxis_title="Frekuensi",
-                    height=380
-                )
-                fig_dist = update_dark_layout(fig_dist)
-                st.plotly_chart(fig_dist, use_container_width=True)
-                
-                render_insight_box(
-                    f"Setelah {iterations:,} iterasi, simulasi menunjukkan <strong>konvergensi stabil</strong> "
-                    f"di sekitar nilai {mean_mc:.3f} dengan 95% CI [{ci_low:.2f}, {ci_high:.2f}]. "
-                    f"Ini memberikan estimasi yang <strong>robust</strong> untuk proyeksi efektivitas di skala kelas besar."
-                )
+        run_btn = st.button("🚀 Jalankan Simulasi", use_container_width=True)
+        if run_btn:
+            st.session_state['run_mc'] = True
+            st.toast("Menyiapkan model stokastik...", icon="⚙️")
+        else:
+            st.session_state['run_mc'] = st.session_state.get('run_mc', False)
 
-# ==========================================
-# 13. AI INSIGHT PANEL
-# ==========================================
-render_section_divider("AI Insights & Recommendations", "05")
-
-with st.container(border=True):
-    st.markdown('<div class="chart-title">🤖 AI-Generated Insights</div>', unsafe_allow_html=True)
-    st.markdown('<div class="chart-description">Analisis otomatis berdasarkan pola data terkini</div>', unsafe_allow_html=True)
-    
-    if len(df) > 0:
-        setiap_hari_pct = len(df[df['Frekuensi_Penggunaan']=='Setiap hari'])/len(df)*100
-        mean_jam = df['Jam_per_Hari'].mean()
-        try:
-            corr_matrix_local = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
-            corr_val_local = corr_matrix_local.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
-        except:
-            corr_val_local = 0.0
-        
-        st.markdown(f"""
-        <div class="ai-insight-panel">
-            <strong>Analisis Pola Penggunaan AI:</strong><br>
-            Berdasarkan pola data saat ini, mahasiswa dengan penggunaan AI tinggi memiliki kecenderungan mengalami 
-            ketergantungan lebih besar, namun peningkatan efektivitas belajar hanya menunjukkan korelasi yang lemah (r = {corr_val_local:.2f}). 
-            {setiap_hari_pct:.0f}% mahasiswa menggunakan AI setiap hari dengan durasi rata-rata {mean_jam:.1f} jam. 
-            Temuan ini mengindikasikan bahwa <strong>kualitas penggunaan AI lebih penting daripada kuantitas</strong>, 
-            dan perlu pengembangan strategi pembelajaran yang mengintegrasikan AI secara bijak tanpa mengurangi 
-            kemampuan analitis mandiri mahasiswa.
-        </div>
+        st.markdown("""
+            <div style="margin-top:16px; padding:12px 14px;
+                background:rgba(59,130,246,0.07);
+                border:1px solid rgba(59,130,246,0.18);
+                border-radius:10px; font-size:11px; color:#64748B; line-height:1.6;">
+                <strong style="color:#93C5FD;">Model Info</strong><br>
+                • Distribusi: Normal<br>
+                • Sample / iterasi: 100<br>
+                • CI: 95% (Percentile)<br>
+                • Clip: [1, 5]
+            </div>
         """, unsafe_allow_html=True)
-    else:
-        st.info("Pilih data pada filter sidebar untuk melihat insight.")
+
+    with mc_c2:
+        if st.session_state.get('run_mc', False):
+            with st.spinner(f"Memproses {iterations:,} komputasi stokastik..."):
+                time.sleep(1)
+
+                p_dist = df['Porsi_Tugas_AI'].value_counts(normalize=True).sort_index()
+                cats, weights = p_dist.index.values, p_dist.values
+                stats = df.groupby('Porsi_Tugas_AI')['Skor_Efektivitas'].agg(
+                    ['mean', 'std']
+                ).fillna(df['Skor_Efektivitas'].std())
+
+                hasil = []
+                for i in range(iterations):
+                    sim_tugas_mc = np.random.choice(cats, size=100, p=weights)
+                    skor = [
+                        np.clip(
+                            np.random.normal(loc=stats.loc[p, 'mean'], scale=stats.loc[p, 'std']),
+                            1, 5
+                        )
+                        for p in sim_tugas_mc
+                    ]
+                    hasil.append(np.mean(skor))
+
+                mean_mc    = np.mean(hasil)
+                ci_low     = np.percentile(hasil, 2.5)
+                ci_high    = np.percentile(hasil, 97.5)
+                ci_width   = ci_high - ci_low
+                running_mean = np.cumsum(hasil) / np.arange(1, iterations + 1)
+
+                st.balloons()
+
+            # ── Metrics ─────────────────────────────────────────────────────
+            mc_m1, mc_m2, mc_m3, mc_m4 = st.columns(4)
+            with mc_m1:
+                st.markdown(f"""
+                    <div class="mc-metric-card">
+                        <div class="mc-metric-value">{iterations:,}</div>
+                        <div class="mc-metric-label">Total Iterasi</div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with mc_m2:
+                st.markdown(f"""
+                    <div class="mc-metric-card">
+                        <div class="mc-metric-value">{mean_mc:.3f}</div>
+                        <div class="mc-metric-label">Mean Ekspektasi</div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with mc_m3:
+                st.markdown(f"""
+                    <div class="mc-metric-card">
+                        <div class="mc-metric-value">{ci_low:.3f}–{ci_high:.3f}</div>
+                        <div class="mc-metric-label">95% Confidence Interval</div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with mc_m4:
+                st.markdown(f"""
+                    <div class="mc-metric-card">
+                        <div class="mc-metric-value">{ci_width:.3f}</div>
+                        <div class="mc-metric-label">Lebar CI</div>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            # ── Convergence Chart ────────────────────────────────────────────
+            st.markdown('<div class="chart-card" style="margin-top:0">', unsafe_allow_html=True)
+            chart_card(
+                "📉 Kurva Konvergensi Running Mean",
+                "Stabilitas estimasi mean skor efektivitas seiring bertambahnya iterasi"
+            )
+
+            # CI band
+            n_pts = min(iterations, 5000)
+            step  = max(1, iterations // n_pts)
+            xs    = np.arange(1, iterations + 1)[::step]
+            ys    = running_mean[::step]
+
+            fig_run = go.Figure()
+            fig_run.add_trace(go.Scatter(
+                x=xs, y=ys,
+                mode='lines', name='Running Mean',
+                line=dict(color=SOFT_COLORS['primary'], width=2),
+                fill='none'
+            ))
+            fig_run.add_hline(
+                y=mean_mc, line_dash="dash",
+                line_color=SOFT_COLORS['danger'], line_width=1.5,
+                annotation_text=f"Konvergen: {mean_mc:.3f}",
+                annotation_font_color='#EF4444',
+                annotation_font_size=11
+            )
+            fig_run.add_hrect(
+                y0=ci_low, y1=ci_high,
+                fillcolor='rgba(59,130,246,0.07)',
+                line=dict(color='rgba(59,130,246,0.2)', width=1, dash='dot'),
+                annotation_text="95% CI",
+                annotation_font_color='#3B82F6',
+                annotation_font_size=10,
+                annotation_position="right"
+            )
+            fig_run.update_layout(
+                xaxis_title="Iterasi", yaxis_title="Running Mean",
+                template=PLOTLY_TEMPLATE, showlegend=False
+            )
+            st.plotly_chart(update_dark_layout(fig_run, 300), use_container_width=True)
+
+            insight_box(
+                f"Model konvergen pada nilai <strong>{mean_mc:.3f}</strong> dengan interval kepercayaan 95% "
+                f"antara <strong>{ci_low:.3f}</strong> dan <strong>{ci_high:.3f}</strong>. "
+                f"Lebar CI sebesar {ci_width:.3f} menunjukkan model yang {'stabil' if ci_width < 0.1 else 'cukup stabil'}."
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        else:
+            st.markdown("""
+                <div style="
+                    display:flex; flex-direction:column; align-items:center; justify-content:center;
+                    padding: 60px 20px; gap: 16px;
+                    background: rgba(15,23,42,0.4);
+                    border: 1px dashed rgba(51,65,85,0.5);
+                    border-radius: 14px; margin-top: 8px;
+                ">
+                    <span style="font-size:48px; opacity:0.4;">🎲</span>
+                    <p style="color:#475569; font-size:14px; text-align:center; margin:0; font-weight:500;">
+                        Model stokastik siap dijalankan.<br>
+                        <span style="color:#64748B; font-size:12px;">
+                        Atur jumlah iterasi dan klik <strong style="color:#3B82F6">Jalankan Simulasi</strong> untuk memulai.
+                        </span>
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)  # close chart-card
+
 
 # ==========================================
-# 14. STRATEGIC INSIGHTS
+# 9. KEY INSIGHTS SECTION
 # ==========================================
-render_section_divider("Strategic Insights", "06")
+section_divider("Key Insights & Temuan Utama")
 
-with st.container(border=True):
-    st.markdown('<div class="chart-title">💡 Strategic Insights & Recommendations</div>', unsafe_allow_html=True)
-    st.markdown('<div class="chart-description">Temuan kunci yang dapat dijadikan landasan kebijakan akademik terkait integrasi AI.</div>', unsafe_allow_html=True)
-    
+with st.container():
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    chart_card(
+        "💡 Ringkasan Temuan Analitik",
+        "Interpretasi otomatis berdasarkan data yang sedang ditampilkan"
+    )
+
     if len(df) > 0:
-        setiap_hari_pct = len(df[df['Frekuensi_Penggunaan']=='Setiap hari'])/len(df)*100
-        mean_jam = df['Jam_per_Hari'].mean()
+        try:
+            corr_matrix_ins = df[[
+                'Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas'
+            ]].corr()
+            corr_val = corr_matrix_ins.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
+        except:
+            corr_val = 0.0
+
         max_jam = df['Jam_per_Hari'].max()
-        try:
-            corr_matrix_local = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
-            corr_val_local = corr_matrix_local.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
-        except:
-            corr_val_local = 0.0
-        
-        st.markdown(f"""
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
-            <div class="insight-box" style="margin-top: 0;">
-                <strong>🎯 Adopsi Tinggi:</strong> {setiap_hari_pct:.0f}% mahasiswa menggunakan AI setiap hari untuk keperluan akademis.
-            </div>
-            <div class="insight-box" style="margin-top: 0;">
-                <strong>⏱️ Intensitas:</strong> Durasi penggunaan rata-rata mencapai {mean_jam:.1f} jam, dengan rekor maksimal {max_jam} jam per hari.
-            </div>
-            <div class="insight-box" style="margin-top: 0;">
-                <strong>⚠️ Risiko Kognitif:</strong> Mahasiswa dengan porsi bantuan AI tinggi (>5 tugas) memiliki probabilitas kesulitan belajar mandiri mencapai 83.3%.
-            </div>
-            <div class="insight-box" style="margin-top: 0;">
-                <strong>📊 Korelasi Lemah:</strong> Korelasi Pearson (r = {corr_val_local:.2f}) membuktikan bahwa bergantung pada AI tidak menjamin peningkatan pemahaman kognitif.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+
+        ins_col1, ins_col2 = st.columns(2)
+        with ins_col1:
+            st.markdown(f"""
+                <div class="exec-item" style="margin-bottom:10px;">
+                    <div class="exec-item-icon">🤖</div>
+                    <div class="exec-item-text">
+                        <strong>{setiap_hari_pct:.0f}% mahasiswa</strong> menggunakan AI setiap hari
+                        untuk keperluan akademik — adopsi teknologi yang masif di lingkungan kampus.
+                    </div>
+                </div>
+                <div class="exec-item">
+                    <div class="exec-item-icon">⏱️</div>
+                    <div class="exec-item-text">
+                        Durasi penggunaan rata-rata <strong>{avg_jam:.1f} jam/hari</strong>,
+                        dengan rekor maksimal <strong>{max_jam} jam/hari</strong>.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+        with ins_col2:
+            st.markdown(f"""
+                <div class="exec-item" style="margin-bottom:10px;">
+                    <div class="exec-item-icon">⚠️</div>
+                    <div class="exec-item-text">
+                        Mahasiswa dengan porsi bantuan AI tinggi (>5 tugas) memiliki probabilitas
+                        kesulitan belajar mandiri yang sangat besar — <strong>risiko ketergantungan kritis</strong>.
+                    </div>
+                </div>
+                <div class="exec-item">
+                    <div class="exec-item-icon">📊</div>
+                    <div class="exec-item-text">
+                        Korelasi Pearson yang lemah (<strong>r = {corr_val:.2f}</strong>) membuktikan
+                        bahwa bergantung pada AI <strong>tidak menjamin</strong> efektivitas pemahaman meningkat.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
     else:
-        st.info("Pilih data pada filter sidebar untuk melihat insight.")
+        st.markdown(
+            '<p style="color:#475569; font-size:13px; padding:16px 0;">Pilih data pada filter sidebar untuk melihat insight.</p>',
+            unsafe_allow_html=True
+        )
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
 # ==========================================
-# 15. FOOTER PROFESIONAL
+# 10. FOOTER
 # ==========================================
 st.markdown("""
-<div class="dashboard-footer">
-    <div style="font-size: 16px; font-weight: 600; color: #F8FAFC; margin-bottom: 8px;">
-        🎓 AI Learning Impact Analytics
-    </div>
-    <div>
-        Dashboard analitik ini dibangun untuk memahami dampak penggunaan <strong>Artificial Intelligence</strong> 
-        dalam ekosistem akademik melalui pendekatan <em>data-driven analytics</em>, probabilitas kondisional, 
-        dan simulasi Monte Carlo.
-    </div>
-    <div class="footer-meta">
+    <div class="dashboard-footer">
         <div>
-            <strong style="color: #CBD5E1;">Developer:</strong> Ahmad Rizza Pahlevi<br>
-            <strong style="color: #CBD5E1;">Institusi:</strong> UIN K.H. Abdurrahman Wahid
+            <div class="footer-brand">AI Learning Impact <span>Analytics</span></div>
+            <div class="footer-meta">
+                Penelitian Ilmiah · Data Science Portfolio · Sidang Skripsi 2026
+            </div>
         </div>
         <div>
-            <strong style="color: #CBD5E1;">Tech Stack:</strong> Python • Streamlit • Plotly • Pandas • NumPy<br>
-            <strong style="color: #CBD5E1;">Version:</strong> 2.0 Enterprise Edition • Juni 2026
+            <div class="footer-meta" style="margin-bottom:6px;">👨‍💻 Ahmad Rizza Pahlevi &nbsp;|&nbsp; 🏛️ UIN K.H. Abdurrahman Wahid &nbsp;|&nbsp; 📅 Juni 2026</div>
+        </div>
+        <div class="footer-tech">
+            <span class="tech-badge">🐍 Python</span>
+            <span class="tech-badge">⚡ Streamlit</span>
+            <span class="tech-badge">📊 Plotly</span>
+            <span class="tech-badge">🔢 NumPy / Pandas</span>
         </div>
     </div>
-</div>
 """, unsafe_allow_html=True)
