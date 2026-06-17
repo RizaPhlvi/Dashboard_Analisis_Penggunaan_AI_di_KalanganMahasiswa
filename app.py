@@ -1355,7 +1355,7 @@ with tab1:
         fig_hero = px.bar(trend_data, x='Frekuensi', y='Jumlah', text='Jumlah', color='Frekuensi',
             color_discrete_sequence=[SOFT_COLORS['primary'], SOFT_COLORS['secondary'], SOFT_COLORS['purple'], SOFT_COLORS['muted']],
             template=PLOTLY_TEMPLATE)
-        fig_hero.update_traces(textposition='outside', marker_line_width=0, marker_corneradius=6,
+        fig_hero.update_traces(textposition='outside', marker_line_width=0, marker_cornerradius=6,
             hovertemplate='<b>%{x}</b><br>Jumlah: %{y} mahasiswa<extra></extra>')
         fig_hero.update_layout(showlegend=False)
         st.plotly_chart(dark_layout(fig_hero, 360), use_container_width=True)
@@ -1388,7 +1388,7 @@ with tab1:
         chart_card("Distribusi Porsi Tugas", "Jumlah tugas dibantu AI", "📊")
         fig_porsi = px.histogram(df, x='Porsi_Tugas_AI', text_auto=True,
             color_discrete_sequence=[SOFT_COLORS['primary']], template=PLOTLY_TEMPLATE)
-        fig_porsi.update_traces(marker_line_width=0, marker_corneradius=6,
+        fig_porsi.update_traces(marker_line_width=0, marker_cornerradius=6,
             hovertemplate='<b>Porsi:</b> %{x}<br><b>Jumlah:</b> %{y}<extra></extra>')
         fig_porsi.update_layout(xaxis_title="Jumlah Tugas", yaxis_title="Mahasiswa", showlegend=False)
         st.plotly_chart(dark_layout(fig_porsi, 300), use_container_width=True)
@@ -1400,7 +1400,7 @@ with tab1:
         chart_card("Durasi Pemakaian Harian", "Histogram dengan boxplot marginal", "⏳")
         fig_hist = px.histogram(df, x='Jam_per_Hari', nbins=8, marginal="box",
             color_discrete_sequence=[SOFT_COLORS['secondary']], template=PLOTLY_TEMPLATE)
-        fig_hist.update_traces(marker_line_width=0, marker_corneradius=6,
+        fig_hist.update_traces(marker_line_width=0, marker_cornerradius=6,
             hovertemplate='<b>Durasi:</b> %{x} jam<br><b>Frekuensi:</b> %{y}<extra></extra>')
         st.plotly_chart(dark_layout(fig_hist, 300), use_container_width=True)
         insight_box(f"Rata-rata <strong>{avg_jam:.1f} jam/hari</strong>, max <strong>{max_jam}</strong> jam.")
@@ -1411,7 +1411,7 @@ with tab1:
         chart_card("Skor Efektivitas Belajar", "Persepsi efektivitas (1-5)", "⭐")
         fig_skor = px.histogram(df, x='Skor_Efektivitas', text_auto=True,
             color_discrete_sequence=[SOFT_COLORS['success']], template=PLOTLY_TEMPLATE)
-        fig_skor.update_traces(marker_line_width=0, marker_corneradius=6,
+        fig_skor.update_traces(marker_line_width=0, marker_cornerradius=6,
             hovertemplate='<b>Skor:</b> %{x}/5<br><b>Jumlah:</b> %{y}<extra></extra>')
         fig_skor.update_layout(xaxis_title="Skor (1-5)", showlegend=False)
         st.plotly_chart(dark_layout(fig_skor, 300), use_container_width=True)
@@ -1425,7 +1425,7 @@ with tab1:
     fig_nilai = px.histogram(df, x='Peningkatan_Nilai', text_auto=True, color='Peningkatan_Nilai',
         color_discrete_sequence=[SOFT_COLORS['success'], SOFT_COLORS['warning'], SOFT_COLORS['muted']],
         template=PLOTLY_TEMPLATE)
-    fig_nilai.update_traces(marker_line_width=0, marker_corneradius=6,
+    fig_nilai.update_traces(marker_line_width=0, marker_cornerradius=6,
         hovertemplate='<b>Persepsi:</b> %{x}<br><b>Jumlah:</b> %{y}<extra></extra>')
     fig_nilai.update_layout(xaxis_title="Persepsi Nilai", showlegend=False)
     st.plotly_chart(dark_layout(fig_nilai, 320), use_container_width=True)
@@ -1449,7 +1449,7 @@ with tab2:
             barmode='stack', text_auto='.1f',
             color_discrete_map={'Ya': SOFT_COLORS['danger'], 'Tidak': SOFT_COLORS['secondary']},
             template=PLOTLY_TEMPLATE)
-        fig_prob.update_traces(marker_line_width=0, marker_corneradius=4,
+        fig_prob.update_traces(marker_line_width=0, marker_cornerradius=4,
             hovertemplate='<b>%{x}</b><br>%{fullData.name}: %{y:.1f}%<extra></extra>')
         st.plotly_chart(dark_layout(fig_prob, 400), use_container_width=True)
         insight_box("Ketergantungan tinggi berkorelasi dengan <strong>probabilitas kesulitan belajar mandiri</strong> yang signifikan.")
@@ -1531,7 +1531,7 @@ with tab2:
         text_auto='.2f', color='Tingkat_Copy_Paste',
         color_continuous_scale=[[0, '#14B8A6'], [0.5, '#8B5CF6'], [1, '#EF4444']],
         template=PLOTLY_TEMPLATE)
-    fig_cp.update_traces(textposition='outside', marker_line_width=0, marker_corneradius=6,
+    fig_cp.update_traces(textposition='outside', marker_line_width=0, marker_cornerradius=6,
         hovertemplate='<b>Porsi:</b> %{x}<br><b>Copy-Paste:</b> %{y:.2f}<extra></extra>')
     fig_cp.update_layout(xaxis_title="Porsi Tugas AI (0-10)", yaxis_title="Skor Copy-Paste (1-5)")
     st.plotly_chart(dark_layout(fig_cp, 320), use_container_width=True)
@@ -1628,7 +1628,7 @@ with tab3:
                 st.markdown('<div style="margin-top:16px;">', unsafe_allow_html=True)
                 chart_card("Distribusi Hasil Simulasi", "Histogram skor efektivitas dari seluruh iterasi", "📊")
                 fig_dist = px.histogram(x=hasil, nbins=50, color_discrete_sequence=[SOFT_COLORS['purple']], template=PLOTLY_TEMPLATE)
-                fig_dist.update_traces(marker_line_width=0, marker_corneradius=4,
+                fig_dist.update_traces(marker_line_width=0, marker_cornerradius=4,
                     hovertemplate='<b>Skor:</b> %{x:.3f}<br><b>Frekuensi:</b> %{y}<extra></extra>')
                 fig_dist.update_layout(xaxis_title="Skor Efektivitas", yaxis_title="Frekuensi")
                 st.plotly_chart(dark_layout(fig_dist, 300), use_container_width=True)
