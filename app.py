@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import time
+import os
 from datetime import datetime
 
 # ══════════════════════════════════════════════════════════════════
@@ -1596,7 +1597,7 @@ with tab3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════
-# 12. RECOMMENDATIONS
+# 12. RECOMMENDATIONS + DOCX DOWNLOAD
 # ══════════════════════════════════════════════════════════════════
 section_divider("05", "Strategic Recommendations")
 
@@ -1637,55 +1638,27 @@ if len(df) > 0:
     </div>
     """, unsafe_allow_html=True)
     
-    report_content = f"""AI LEARNING IMPACT ANALYTICS - EXECUTIVE REPORT
-==============================================
-Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Researcher: Ahmad Rizza Pahlevi
-Institution: UIN K.H. Abdurrahman Wahid
-
-EXECUTIVE SUMMARY
------------------
-Total Respondents: {n_resp:,}
-Daily Usage: {setiap_hari_pct:.1f}%
-Avg Duration: {avg_jam:.2f} hours/day
-Avg Tasks Assisted: {avg_tugas:.2f}/10
-Effectiveness Score: {avg_skor:.2f}/5
-High Dependency: {ketergantungan_pct:.1f}%
-Pearson Correlation (Tasks vs Effectiveness): r = {corr_val:.3f}
-
-KEY FINDINGS
-------------
-1. {setiap_hari_pct:.0f}% of students use AI daily for academic purposes
-2. {ketergantungan_pct:.0f}% show high dependency (>5 tasks assisted by AI)
-3. Weak correlation (r = {corr_val:.2f}) between AI usage quantity and learning effectiveness
-4. Average usage of {avg_jam:.1f} hours/day, with maximum reaching {max_jam} hours
-5. High-dependency students show significantly higher difficulty in independent learning
-
-RECOMMENDATIONS
----------------
-1. Implement AI Literacy Framework across all programs
-2. Set maximum 50% task completion via AI to preserve cognitive independence
-3. Focus on quality of AI usage methods, not frequency
-4. Develop healthy usage time guidelines
-5. Create monitoring system for dependency risks
-
-TECHNICAL SPECIFICATIONS
-------------------------
-Engine: Python Streamlit
-Visualization: Plotly
-Analysis: NumPy, Pandas
-Simulation: Monte Carlo Stochastic
-"""
+    # ── DOCX DOWNLOAD BUTTON ──────────────────────────────────────
+    docx_path = "Laporan_Analisis_AI_Efektivitas_Belajar.docx"
     
     col_dl1, col_dl2, col_dl3 = st.columns([1, 2, 1])
     with col_dl2:
-        st.download_button(
-            label="📄 Download Executive Report",
-            data=report_content,
-            file_name=f"AI_Learning_Impact_Report_{datetime.now().strftime('%Y%m%d')}.txt",
-            mime="text/plain",
-            use_container_width=True
-        )
+        if os.path.exists(docx_path):
+            with open(docx_path, "rb") as f:
+                docx_bytes = f.read()
+            
+            st.download_button(
+                label="📄 Download Laporan Lengkap (DOCX)",
+                data=docx_bytes,
+                file_name="Laporan_Analisis_AI_Efektivitas_Belajar.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True
+            )
+        else:
+            st.warning(
+                f"⚠️ File `{docx_path}` tidak ditemukan. "
+                "Pastikan file berada di folder yang sama dengan `app.py`."
+            )
 else:
     st.info("Pilih data pada filter sidebar untuk melihat rekomendasi.")
 
