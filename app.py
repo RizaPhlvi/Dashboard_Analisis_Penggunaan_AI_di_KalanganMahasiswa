@@ -1060,7 +1060,7 @@ def render_data_quality(df):
             has_4 = 4 in sem_list
             badge = '<span class="semester-badge included">✓ SMT 4</span>' if has_4 else '<span class="semester-badge missing">⚠ No SMT 4</span>'
             sem_val = f"{sem_count} ({sem_display})"
-        except:
+        except Exception:
             sem_val = str(df['Semester'].nunique())
             badge = ''
     else:
@@ -1068,6 +1068,9 @@ def render_data_quality(df):
         badge = ''
     
     prodi_count = df['Prodi'].nunique() if 'Prodi' in df.columns else 0
+    
+    # FIXED: Variables hardcoded to 13 (core dataset columns only)
+    core_variables = 13
     
     st.markdown(f"""
     <div class="dq-panel">
@@ -1084,7 +1087,7 @@ def render_data_quality(df):
             <div class="dq-item"><div class="dq-label">Missing Values</div><div class="dq-value">{missing} ({missing_pct:.2f}%)</div></div>
             <div class="dq-item"><div class="dq-label">Program Studi</div><div class="dq-value">{prodi_count}</div></div>
             <div class="dq-item"><div class="dq-label">Semester</div><div class="dq-value" style="font-size:13px;">{sem_val}</div>{badge}</div>
-            <div class="dq-item"><div class="dq-label">Variables</div><div class="dq-value">{len(df.columns)}</div></div>
+            <div class="dq-item"><div class="dq-label">Variables</div><div class="dq-value">{core_variables}</div></div>
             <div class="dq-item"><div class="dq-label">Date Range</div><div class="dq-value" style="font-size:12px;">{date_min} → {date_max}</div></div>
         </div>
     </div>
@@ -1105,7 +1108,7 @@ def load_data():
     df['Is_Ketergantungan_Tinggi'] = np.where(df['Porsi_Tugas_AI'] > 5, 'Tinggi (>5 Tugas)', 'Rendah (<=5 Tugas)')
     try:
         df['Date_Parsed'] = pd.to_datetime(df['Timestamp'], errors='coerce').dt.date
-    except:
+    except Exception:
         df['Date_Parsed'] = df['Timestamp']
     return df
 
@@ -1150,7 +1153,7 @@ with st.sidebar:
         <div class="glass-row"><div class="glass-row-icon">📊</div><span><strong style="color:#F8FAFC;">{len(df_raw):,}</strong> Total Records</span></div>
         <div class="glass-row"><div class="glass-row-icon">🎓</div><span><strong style="color:#F8FAFC;">{df_raw['Prodi'].nunique()}</strong> Programs</span></div>
         <div class="glass-row"><div class="glass-row-icon">📚</div><span><strong style="color:#F8FAFC;">{df_raw['Semester'].nunique()}</strong> Semesters</span></div>
-        <div class="glass-row"><div class="glass-row-icon">📋</div><span><strong style="color:#F8FAFC;">{len(df_raw.columns)}</strong> Variables</span></div>
+        <div class="glass-row"><div class="glass-row-icon">📋</div><span><strong style="color:#F8FAFC;">13</strong> Variables</span></div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1208,7 +1211,7 @@ def make_spark(series, color='#3B82F6', bins=8):
         counts, _ = np.histogram(series, bins=bins)
         max_c = counts.max() if counts.max() > 0 else 1
         return [(int(c / max_c * 100), color) for c in counts]
-    except:
+    except Exception:
         return None
 
 st.markdown('<div class="kpi-grid">', unsafe_allow_html=True)
@@ -1250,7 +1253,7 @@ section_divider("02", "Executive Insights")
 try:
     corr_matrix = df[['Jam_per_Hari', 'Porsi_Tugas_AI', 'Tingkat_Copy_Paste', 'Skor_Efektivitas']].corr()
     corr_val = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
-except:
+except Exception:
     corr_val = 0.0
 
 max_jam = df['Jam_per_Hari'].max() if len(df) > 0 else 0
@@ -1420,12 +1423,15 @@ with tab2:
         
         try:
             cv = corr_matrix.loc['Porsi_Tugas_AI', 'Skor_Efektivitas']
-        except:
+        except Exception:
             cv = 0.0
         
-        if cv > 0.5: interp_cls, interp_txt = "strong-pos", "Strong Positive"
-        elif cv < -0.5: interp_cls, interp_txt = "weak-neg", "Strong Negative"
-        else: interp_cls, interp_txt = "neutral", "Weak"
+        if cv > 0.5:
+            interp_cls, interp_txt = "strong-pos", "Strong Positive"
+        elif cv < -0.5:
+            interp_cls, interp_txt = "weak-neg", "Strong Negative"
+        else:
+            interp_cls, interp_txt = "neutral", "Weak"
         
         st.markdown(f'<div class="heatmap-interp {interp_cls}"><span>Correlation: {cv:.2f}</span><span>•</span><span>{interp_txt}</span></div>', unsafe_allow_html=True)
         insight_box(f"Korelasi Porsi Tugas ↔ Efektivitas <strong>r = {cv:.3f}</strong> - kuantitas tidak otomatis meningkatkan kualitas.")
