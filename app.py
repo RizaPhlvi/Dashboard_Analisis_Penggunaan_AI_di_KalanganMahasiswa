@@ -953,8 +953,225 @@ div[data-testid="stMetricDelta"] { font-size: 12px !important; font-weight: 600 
     box-shadow: none !important;
     padding: 0 !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   SPLASH / LOADING SCREEN
+   ══════════════════════════════════════════════════════════════════ */
+.splash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background:
+        radial-gradient(ellipse 120% 80% at 20% 20%, rgba(59,130,246,0.08), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 80% 80%, rgba(139,92,246,0.06), transparent 50%),
+        #020617;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.splash-content {
+    text-align: center;
+    animation: splash-fade-in 0.6s ease-out;
+}
+.splash-logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin: 0 auto 24px auto;
+    box-shadow: 0 8px 32px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15);
+    animation: splash-logo-pulse 2s ease-in-out infinite;
+}
+@keyframes splash-logo-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(59,130,246,0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 12px 48px rgba(59,130,246,0.5); }
+}
+@keyframes splash-fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.splash-title {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #F8FAFC, #CBD5E1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+.splash-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    margin-bottom: 32px;
+}
+.splash-progress-track {
+    width: 260px;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+}
+.splash-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #3B82F6, #14B8A6, #8B5CF6);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: splash-bar-shimmer 2s linear infinite;
+    box-shadow: 0 0 12px rgba(59,130,246,0.4);
+}
+@keyframes splash-bar-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.splash-status {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    min-height: 16px;
+}
+.splash-dots {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 4px;
+}
+.splash-dots span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: splash-dots-blink 1.4s infinite;
+}
+.splash-dots span:nth-child(2) { animation-delay: 0.2s; }
+.splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes splash-dots-blink {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+.splash-footer {
+    position: absolute;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.5;
+}
+
+/* Fade out animation */
+.splash-overlay.fade-out {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
 </style>
 """, unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════
+# 🎬 SPLASH / LOADING SCREEN
+# ══════════════════════════════════════════════════════════════════
+splash_container = st.empty()
+
+splash_container.markdown("""
+<div class="splash-overlay" id="splash-overlay">
+    <div class="splash-content">
+        <div class="splash-logo">🎓</div>
+        <div class="splash-title">AI Learning Impact</div>
+        <div class="splash-sub">Analytics Workspace</div>
+        <div class="splash-progress-track">
+            <div class="splash-progress-bar" id="splash-progress-bar"></div>
+        </div>
+        <div class="splash-status" id="splash-status">
+            Initializing engine<span class="splash-dots"><span></span><span></span><span></span></span>
+        </div>
+    </div>
+    <div class="splash-footer">
+        Research Dashboard · v3.0 · UIN K.H. Abdurrahman Wahid
+    </div>
+</div>
+<script>
+(function() {
+    const statusMessages = [
+        "Initializing engine",
+        "Loading research dataset",
+        "Computing statistical models",
+        "Preparing visualizations",
+        "Building Monte Carlo engine",
+        "Rendering dashboard"
+    ];
+    let progress = 0;
+    const progressBar = document.getElementById('splash-progress-bar');
+    const statusText = document.getElementById('splash-status');
+    const splashOverlay = document.getElementById('splash-overlay');
+    
+    const statusSuffix = '<span class="splash-dots"><span></span><span></span><span></span></span>';
+    
+    const interval = setInterval(function() {
+        // Random increment for realistic feel
+        const increment = Math.random() * 4 + 2;
+        progress = Math.min(progress + increment, 100);
+        
+        if (progressBar) {
+            progressBar.style.width = progress + '%';
+        }
+        
+        // Update status message based on progress
+        const msgIndex = Math.min(
+            Math.floor(progress / (100 / statusMessages.length)),
+            statusMessages.length - 1
+        );
+        
+        if (statusText && statusMessages[msgIndex]) {
+            statusText.innerHTML = statusMessages[msgIndex] + statusSuffix;
+        }
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            // Short pause at 100% before fading
+            setTimeout(function() {
+                if (statusText) statusText.innerHTML = 'Complete' + statusSuffix;
+                setTimeout(function() {
+                    if (splashOverlay) {
+                        splashOverlay.classList.add('fade-out');
+                        setTimeout(function() {
+                            if (splashOverlay && splashOverlay.parentNode) {
+                                splashOverlay.parentNode.removeChild(splashOverlay);
+                            }
+                        }, 800);
+                    }
+                }, 400);
+            }, 300);
+        }
+    }, 120);
+})();
+</script>
+""", unsafe_allow_html=True)
+
+# Simulate backend processing time
+time.sleep(3)
+
+# Clear splash and show main content
+splash_container.empty()
 
 # ══════════════════════════════════════════════════════════════════
 # 3. DESIGN TOKENS
@@ -1069,8 +1286,6 @@ def render_data_quality(df):
         badge = ''
     
     prodi_count = df['Prodi'].nunique() if 'Prodi' in df.columns else 0
-    
-    # FIXED: Variables hardcoded to 13 (core dataset columns only)
     core_variables = 13
     
     st.markdown(f"""
@@ -1638,7 +1853,6 @@ if len(df) > 0:
     </div>
     """, unsafe_allow_html=True)
     
-    # ── DOCX DOWNLOAD BUTTON ──────────────────────────────────────
     docx_path = "Laporan_Analisis_AI_Efektivitas_Belajar.docx"
     
     col_dl1, col_dl2, col_dl3 = st.columns([1, 2, 1])
